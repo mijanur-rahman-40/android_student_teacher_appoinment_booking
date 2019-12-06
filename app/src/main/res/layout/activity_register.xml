@@ -50,8 +50,7 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/bgHeader"
-        android:layout_margin="20dp">
+        android:layout_below="@+id/bgHeader">
         <RelativeLayout
             android:id="@+id/rlayout"
             android:layout_width="match_parent"
@@ -61,6 +60,7 @@
                 android:id="@+id/cv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_margin="20dp"
                 app:cardCornerRadius="10dp"
                 app:cardElevation="4dp">
 
@@ -156,6 +156,24 @@
                     android:textAllCaps="false"
                     android:textColor="@color/colorWhite" />
             </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@+id/cv"
+                android:layout_alignRight="@+id/cv"
+                android:layout_marginTop="-20dp"
+                android:layout_marginRight="-10dp"
+                android:elevation="10dp">
+
+                <ImageButton
+                    android:id="@+id/btBackToLogin"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:background="@drawable/bg_ui"
+                    android:src="@drawable/ic_arrow_back" />
+            </RelativeLayout>
+
         </RelativeLayout>
     </ScrollView>
 

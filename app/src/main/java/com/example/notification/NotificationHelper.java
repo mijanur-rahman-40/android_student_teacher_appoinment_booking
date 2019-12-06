@@ -14,7 +14,7 @@ public class NotificationHelper {
         Intent intent = new Intent(context,ProfileActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(context,100,intent,PendingIntent.FLAG_CANCEL_CURRENT);
 
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, MainActivity.CHANNEL_ID)
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, LoginActivity.CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_notifications_blue)
                 .setContentTitle(title)
                 .setContentText(body)

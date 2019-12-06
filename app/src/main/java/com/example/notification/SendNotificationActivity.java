@@ -10,7 +10,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
 import java.io.IOException;
 
@@ -63,7 +62,7 @@ public class SendNotificationActivity extends AppCompatActivity {
     private void Logout(){
         firebaseAuth.signOut();
         finish();
-        startActivity(new Intent(SendNotificationActivity.this, MainActivity.class));
+        startActivity(new Intent(SendNotificationActivity.this, LoginActivity.class));
     }
 
 
