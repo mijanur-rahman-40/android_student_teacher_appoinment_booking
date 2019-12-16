@@ -12,10 +12,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 public class AdapterMoreFood extends RecyclerView.Adapter<AdapterMoreFood.ViewHolder> {
-    List<DataFood> foodList;
+    List<DataUser> foodList;
     Context context;
 
-    public AdapterMoreFood(List<DataFood> foodList, Context context) {
+    public AdapterMoreFood(List<DataUser> foodList, Context context) {
         this.foodList = foodList;
         this.context = context;
     }
@@ -23,15 +23,15 @@ public class AdapterMoreFood extends RecyclerView.Adapter<AdapterMoreFood.ViewHo
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.view_more_food,viewGroup,false);
+        View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.view_reg_user,viewGroup,false);
         ViewHolder viewHolder = new ViewHolder(v);
         return viewHolder;
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
-        viewHolder.foodname.setText(foodList.get(i).getFoodName());
-        viewHolder.price.setText("Rp."+foodList.get(i).getPrice());
+        viewHolder.fullName.setText(foodList.get(i).getFullName());
+        viewHolder.email.setText("Rp."+foodList.get(i).getEmail());
     }
 
     @Override
@@ -40,12 +40,12 @@ public class AdapterMoreFood extends RecyclerView.Adapter<AdapterMoreFood.ViewHo
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        public TextView foodname,price;
+        public TextView fullName, email;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            foodname    = itemView.findViewById(R.id.tvNameFood);
-            price       = itemView.findViewById(R.id.tvPrice);
+            fullName = itemView.findViewById(R.id.tvFullName);
+            email = itemView.findViewById(R.id.tvEmail);
         }
     }
 }

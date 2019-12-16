@@ -28,7 +28,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     public static final String NODE_USERS = "users";
     private FirebaseAuth firebaseAuth;
-    private List<User> userList;
+    private List<UserStudent> userStudentList;
 
     private ImageView backBtn, serchBtn;
     private RecyclerView recyclerView;
@@ -99,14 +99,14 @@ public class ProfileActivity extends AppCompatActivity {
 
         progressBar.setVisibility(View.VISIBLE);
 
-        userList = new ArrayList<>();
+        userStudentList = new ArrayList<>();
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
 
         final FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("users");
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("users").child("students");
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -115,11 +115,11 @@ public class ProfileActivity extends AppCompatActivity {
 
                 if (dataSnapshot.exists()) {
                     for (DataSnapshot dsUser : dataSnapshot.getChildren()) {
-                        User user = dsUser.getValue(User.class);
-                        if (!user.getToken().equals(firebaseUser.getUid()))
-                        userList.add(user);
+                        UserStudent userStudent = dsUser.getValue(UserStudent.class);
+                        if (!userStudent.getToken().equals(firebaseUser.getUid()))
+                        userStudentList.add(userStudent);
                     }
-                    UserAdapter userAdapter = new UserAdapter(ProfileActivity.this, userList);
+                    UserAdapter userAdapter = new UserAdapter(ProfileActivity.this, userStudentList);
                     recyclerView.setAdapter(userAdapter);
                 } else {
                     Toast.makeText(ProfileActivity.this, "No user found", Toast.LENGTH_SHORT).show();
@@ -148,7 +148,7 @@ public class ProfileActivity extends AppCompatActivity {
 //
 //    private void saveToken(String token) {
 //        String email = firebaseAuth.getCurrentUser().getEmail();
-//        User user = new User(email, token);
+//        UserStudent user = new UserStudent(email, token);
 //
 //        DatabaseReference databaseUser = FirebaseDatabase.getInstance().getReference(NODE_USERS);
 //

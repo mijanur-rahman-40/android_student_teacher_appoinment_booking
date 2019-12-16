@@ -32,20 +32,20 @@ public class SendNotificationActivity extends AppCompatActivity {
         setContentView(R.layout.activity_send_notification);
 
 
-        final User user = (User) getIntent().getSerializableExtra("user");
+        final UserStudent userStudent = (UserStudent) getIntent().getSerializableExtra("userStudent");
 
         textView = findViewById(R.id.textViewUser);
         error = findViewById(R.id.error);
         editTextTitle = findViewById(R.id.editTextTitle);
         editTextBody = findViewById(R.id.editTextBody);
 
-        textView.setText("Sending to : " + user.getEmail());
+        textView.setText("Sending to : " + userStudent.getEmail());
 
 
         findViewById(R.id.buttonSend).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                sendNotification(user);
+                sendNotification(userStudent);
             }
         });
 
@@ -67,7 +67,7 @@ public class SendNotificationActivity extends AppCompatActivity {
 
 
 
-    private void sendNotification(User user) {
+    private void sendNotification(UserStudent userStudent) {
         String title = editTextTitle.getText().toString().trim();
         String body = editTextBody.getText().toString().trim();
 
@@ -88,7 +88,7 @@ public class SendNotificationActivity extends AppCompatActivity {
                 .build();
 
         Api api = retrofit.create(Api.class);
-        Call<ResponseBody> call = api.sendNotification(user.getToken(), title, body);
+        Call<ResponseBody> call = api.sendNotification(userStudent.getToken(), title, body);
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {

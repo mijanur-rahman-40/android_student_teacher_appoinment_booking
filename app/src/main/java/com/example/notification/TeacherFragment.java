@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -25,9 +24,8 @@ import com.google.firebase.database.FirebaseDatabase;
 
 public class TeacherFragment extends Fragment {
 
-    public static final String NODE_USERS = "users";
-    DatabaseReference databaseUser;
-    private TextView tvSignUp;
+    private static final String NODE_USERS = "users";
+    private DatabaseReference databaseUser;
     private EditText emailInput, fullnameInput, passInput, rePassInput;
     private FirebaseAuth firebaseAuth;
     private Button signInBtn;
@@ -55,7 +53,6 @@ public class TeacherFragment extends Fragment {
     }
 
     private void setUpView(View item) {
-        tvSignUp = item.findViewById(R.id.tvSignUp);
         emailInput = item.findViewById(R.id.email_input);
         fullnameInput = item.findViewById(R.id.fullname_input);
         passInput = item.findViewById(R.id.pass_input);
@@ -114,7 +111,7 @@ public class TeacherFragment extends Fragment {
                 }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Toast.makeText(getContext(), "User creation failed!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "UserStudent creation failed!", Toast.LENGTH_SHORT).show();
 
             }
         });
@@ -131,13 +128,13 @@ public class TeacherFragment extends Fragment {
 
     private void writeUser(String email, String fullName, String userID) {
 
-        User user = new User(email, userID, fullName);
-        databaseUser.child(userID).setValue(user)
+        UserStudent userStudent = new UserStudent();
+        databaseUser.child(userID).setValue(userStudent)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
-                            Toast.makeText(getContext(), "User created successfully!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), "UserStudent created successfully!", Toast.LENGTH_SHORT).show();
 
                         }
                     }

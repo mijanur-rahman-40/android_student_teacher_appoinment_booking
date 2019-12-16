@@ -3,6 +3,7 @@ package com.example.notification;
 import android.app.ActivityOptions;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,7 +28,7 @@ public class StudentFragment extends Fragment {
 
     public static final String NODE_USERS = "users";
     private TextView tvSignUp;
-    private EditText emailInput, fullnameInput, passInput, rePassInput;
+    private EditText emailInput, fullnameInput, regNo, department, semester,session, passInput, rePassInput;
     private FirebaseAuth firebaseAuth;
     DatabaseReference databaseUser;
     private Button signInBtn;
@@ -62,8 +63,13 @@ public class StudentFragment extends Fragment {
         passInput = item.findViewById(R.id.pass_input);
         rePassInput = item.findViewById(R.id.re_pass_input);
         signInBtn = item.findViewById(R.id.sign_up_btn);
+        regNo = item.findViewById(R.id.reg_no_input);
+        department = item.findViewById(R.id.dept_input);
+        semester = item.findViewById(R.id.semester_input);
+        session = item.findViewById(R.id.session_input);
         firebaseAuth = FirebaseAuth.getInstance();
         databaseUser = FirebaseDatabase.getInstance().getReference(NODE_USERS);
+
     }
 
     private void createUser() {
@@ -71,15 +77,37 @@ public class StudentFragment extends Fragment {
         final String password = passInput.getText().toString().trim();
         final String rePassword = rePassInput.getText().toString().trim();
         final String fullName = fullnameInput.getText().toString().trim();
+        final String registraion = regNo.getText().toString().trim();
+        final String departmentName = department.getText().toString().trim();
+        final String semesterYear = semester.getText().toString().trim();
+        final String sessionAdmit = session.getText().toString().trim();
 
-        if (email.isEmpty()) {
-            emailInput.setError("Email is required.");
-            emailInput.requestFocus();
-            return;
-        }
+
         if (fullName.isEmpty()) {
             fullnameInput.setError("Name is required.");
             fullnameInput.requestFocus();
+            return;
+        }
+        if (registraion.isEmpty()) {
+            regNo.setError("Registration number  is required.");
+            regNo.requestFocus();
+            return;
+        }if (departmentName.isEmpty()) {
+            department.setError("Department is required.");
+            department.requestFocus();
+            return;
+        }if (semesterYear.isEmpty()) {
+            semester.setError("Semester is required.");
+            semester.requestFocus();
+            return;
+        }if (sessionAdmit.isEmpty()) {
+            session.setError("Session is required.");
+            session.requestFocus();
+            return;
+        }
+        if (email.isEmpty()) {
+            emailInput.setError("Email is required.");
+            emailInput.requestFocus();
             return;
         }
 
@@ -106,7 +134,7 @@ public class StudentFragment extends Fragment {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            writeUser(email, fullName, firebaseAuth.getUid());
+                            writeUser(email, fullName, firebaseAuth.getUid(), registraion, departmentName,semesterYear,sessionAdmit);
                             startLoginActivity();
                         }
 
@@ -115,7 +143,7 @@ public class StudentFragment extends Fragment {
                 }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Toast.makeText(getContext(), "User creation failed!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Student account creation failed!", Toast.LENGTH_SHORT).show();
 
             }
         });
@@ -130,22 +158,25 @@ public class StudentFragment extends Fragment {
 
     }
 
-    private void writeUser(String email, String fullName, String userID) {
 
-        User user = new User(email, userID, fullName);
-        databaseUser.child(userID).setValue(user)
+
+    private void writeUser(String email, String fullName, String token, String regNo, String department, String semester, String session) {
+
+        UserStudent userStudent = new UserStudent(email, fullName, token, regNo,department,semester,session);
+        databaseUser.child("students").child(token).setValue(userStudent)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
-                            Toast.makeText(getContext(), "User created successfully!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), "Student account created successfully!", Toast.LENGTH_SHORT).show();
 
                         }
                     }
                 }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Toast.makeText(getContext(), "Data Saving failed!", Toast.LENGTH_SHORT).show();
+                Log.d("PROBLEM",e.toString());
+                Toast.makeText(getContext(), "Data Saving failed! ", Toast.LENGTH_SHORT).show();
             }
         });
 

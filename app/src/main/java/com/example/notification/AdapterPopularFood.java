@@ -13,10 +13,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 public class AdapterPopularFood extends RecyclerView.Adapter<AdapterPopularFood.ViewHolder> {
-    List<DataFood> foodList;
+    List<DataUser> foodList;
     Context context;
 
-    AdapterPopularFood(List<DataFood> foodList, Context context) {
+    AdapterPopularFood(List<DataUser> foodList, Context context) {
         this.foodList = foodList;
         this.context = context;
     }
@@ -32,8 +32,8 @@ public class AdapterPopularFood extends RecyclerView.Adapter<AdapterPopularFood.
     @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
-        viewHolder.foodname.setText(foodList.get(i).getFoodName());
-        viewHolder.price.setText("Rp."+foodList.get(i).getPrice());
+        viewHolder.foodname.setText(foodList.get(i).getFullName());
+        viewHolder.price.setText("Rp."+foodList.get(i).getEmail());
     }
 
     @Override

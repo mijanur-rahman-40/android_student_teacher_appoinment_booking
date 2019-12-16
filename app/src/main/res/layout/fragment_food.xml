@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".FoodFragment">
+    tools:context=".UserFragment">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -18,21 +18,21 @@
                 android:id="@+id/cv2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dp"
+                android:layout_margin="5dp"
                 android:layout_marginTop="20dp"
-                app:cardCornerRadius="15dp"
+                app:cardCornerRadius="5dp"
                 app:cardElevation="5dp">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:padding="10dp">
 
                     <TextView
                         android:id="@+id/tvPopular"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
-                        android:layout_marginTop="20dp"
                         android:text="Trending"
                         android:textAlignment="center"
                         android:textSize="16sp"
@@ -61,19 +61,23 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_below="@+id/cv2"
-                android:layout_marginTop="10dp">
+                app:cardCornerRadius="5dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="5dp"
+                android:layout_marginBottom="5dp">
 
 
                 <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:padding="10dp">
 
                     <TextView
                         android:id="@+id/tvMoreFood"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
-                        android:layout_marginTop="20dp"
                         android:text="History"
                         android:textAlignment="center"
                         android:textSize="16sp"
@@ -84,9 +88,9 @@
                         android:layout_width="match_parent"
                         android:layout_height="3dp"
                         android:layout_below="@+id/tvMoreFood"
-                        android:layout_alignLeft="@+id/tvMoreFood"
-                        android:layout_alignRight="@+id/tvMoreFood"
-                        android:layout_marginRight="50dp"
+                        android:layout_alignStart="@+id/tvMoreFood"
+                        android:layout_alignEnd="@+id/tvMoreFood"
+                        android:layout_marginEnd="50dp"
                         android:background="@color/colorPrimary" />
 
                     <androidx.recyclerview.widget.RecyclerView
