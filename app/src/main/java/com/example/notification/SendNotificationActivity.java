@@ -39,7 +39,7 @@ public class SendNotificationActivity extends AppCompatActivity {
         editTextTitle = findViewById(R.id.editTextTitle);
         editTextBody = findViewById(R.id.editTextBody);
 
-        textView.setText("Sending to : " + user.email);
+        textView.setText("Sending to : " + user.getEmail());
 
 
         findViewById(R.id.buttonSend).setOnClickListener(new View.OnClickListener() {
@@ -88,7 +88,7 @@ public class SendNotificationActivity extends AppCompatActivity {
                 .build();
 
         Api api = retrofit.create(Api.class);
-        Call<ResponseBody> call = api.sendNotification(user.token, title, body);
+        Call<ResponseBody> call = api.sendNotification(user.getToken(), title, body);
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {

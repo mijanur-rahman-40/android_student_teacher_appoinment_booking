@@ -1,20 +1,18 @@
 package com.example.notification;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import android.util.Pair;
-
 import android.app.ActivityOptions;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Pair;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
@@ -22,11 +20,13 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -42,6 +42,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private EditText emailEditText, passwordEditText;
     private ProgressBar progressBar;
+    private Button loginBtn;
 
     private FirebaseAuth firebaseAuth;
 
@@ -55,8 +56,7 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
-
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         setContentView(R.layout.activity_login);
 
@@ -75,82 +75,61 @@ public class LoginActivity extends AppCompatActivity {
         progressBar.setVisibility(View.INVISIBLE);
         logLayout = findViewById(R.id.logLayout);
 
-        animation = AnimationUtils.loadAnimation(this,R.anim.downtoupdiagonal);
+        animation = AnimationUtils.loadAnimation(this, R.anim.downtoupdiagonal);
         logLayout.setAnimation(animation);
 
         firebaseAuth = FirebaseAuth.getInstance();
 
-        btRegister  = findViewById(R.id.btRegister);
-        tvLogin     = findViewById(R.id.tvLogin);
+        btRegister = findViewById(R.id.btRegister);
+        tvLogin = findViewById(R.id.tvLogin);
+        loginBtn = findViewById(R.id.buttonSignUp);
 
 
-        findViewById(R.id.buttonSignUp).setOnClickListener(new View.OnClickListener() {
+        loginBtn.setOnClickListener(new View.OnClickListener() {
+
+
             @Override
             public void onClick(View view) {
-                createUser();
+                userLogin();
+                progressBar.setVisibility(View.VISIBLE);
+
             }
         });
 
         btRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent   = new Intent(LoginActivity.this,RegisterActivity.class);
-                Pair[] pairs    = new Pair[1];
-                pairs[0] = new Pair<View,String>(tvLogin,"tvLogin");
-                ActivityOptions activityOptions = ActivityOptions.makeSceneTransitionAnimation(LoginActivity.this,pairs);
-                startActivity(intent,activityOptions.toBundle());
+                Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
+                Pair[] pairs = new Pair[1];
+                pairs[0] = new Pair<View, String>(tvLogin, "tvLogin");
+                ActivityOptions activityOptions = ActivityOptions.makeSceneTransitionAnimation(LoginActivity.this, pairs);
+                startActivity(intent, activityOptions.toBundle());
             }
         });
     }
 
 
-    private void createUser() {
-        final String email = emailEditText.getText().toString().trim();
-        final String password = passwordEditText.getText().toString().trim();
+    private void userLogin() {
+        final String emailID = emailEditText.getText().toString().trim();
+        final String pass = passwordEditText.getText().toString().trim();
 
-        if (email.isEmpty()) {
+        if (emailID.isEmpty()) {
             emailEditText.setError("Email is required.");
             emailEditText.requestFocus();
             return;
         }
-        if (password.isEmpty()) {
+        if (pass.isEmpty()) {
             passwordEditText.setError("Password is required.");
             passwordEditText.requestFocus();
             return;
         }
-
-        if (password.length() < 6) {
-            passwordEditText.setError("Password should be at least 6 character long.");
-            passwordEditText.requestFocus();
-            return;
-        }
-
-        progressBar.setVisibility(View.VISIBLE);
-        firebaseAuth.createUserWithEmailAndPassword(email, password)
+        firebaseAuth.signInWithEmailAndPassword(emailID, pass)
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            startProfileActivity();
-                        } else {
-                            if (task.getException() instanceof FirebaseAuthUserCollisionException) {
-                                userLogin(email, password);
-                            } else {
-                                progressBar.setVisibility(View.INVISIBLE);
-                                Toast.makeText(LoginActivity.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    }
-                });
-    }
-
-    private void userLogin(String email, String password) {
-        firebaseAuth.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            startProfileActivity();
+                            startMainActivity();
+                            Toast.makeText(LoginActivity.this, "Successfully logged in", Toast.LENGTH_SHORT).show();
                         } else {
                             progressBar.setVisibility(View.INVISIBLE);
                             Toast.makeText(LoginActivity.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
@@ -165,12 +144,12 @@ public class LoginActivity extends AppCompatActivity {
         super.onStart();
 
         if (firebaseAuth.getCurrentUser() != null) {
-            startProfileActivity();
+            startMainActivity();
         }
 
     }
 
-    private void startProfileActivity() {
+    private void startMainActivity() {
         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
