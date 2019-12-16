@@ -14,10 +14,16 @@
         android:theme="@style/ToolbarTheme"
         android:elevation="5dp" />
 
-    <ImageButton
+    <ImageView
+        android:id="@+id/back_btn"
         android:layout_width="30dp"
-        android:layout_height="30
-"
+        android:layout_height="30dp"
+        android:layout_marginTop="40dp"
+        android:elevation="5dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:src="@drawable/ic_arrow_back"
+        android:layout_marginStart="20dp"/>
 
     <TextView
         android:id="@+id/tvSignUp"
@@ -65,6 +71,7 @@
         app:cardElevation="5dp">
 
         <RelativeLayout
+            android:id="@+id/tabLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 

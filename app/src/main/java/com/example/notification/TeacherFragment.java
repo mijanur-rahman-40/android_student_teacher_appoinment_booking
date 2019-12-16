@@ -26,13 +26,13 @@ import com.google.firebase.database.FirebaseDatabase;
 public class TeacherFragment extends Fragment {
 
     public static final String NODE_USERS = "users";
+    DatabaseReference databaseUser;
     private TextView tvSignUp;
     private EditText emailInput, fullnameInput, passInput, rePassInput;
     private FirebaseAuth firebaseAuth;
-    DatabaseReference databaseUser;
     private Button signInBtn;
 
-    public TeacherFragment(){
+    public TeacherFragment() {
 
     }
 
@@ -49,7 +49,6 @@ public class TeacherFragment extends Fragment {
                 createUser();
             }
         });
-
 
 
         return itemView;

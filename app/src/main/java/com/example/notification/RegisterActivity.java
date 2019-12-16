@@ -10,34 +10,24 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.RelativeLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.viewpager.widget.ViewPager;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.tabs.TabLayout;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.iid.InstanceIdResult;
 
 public class RegisterActivity extends AppCompatActivity {
 
     TabLayout regTab;
     ViewPager regPager;
     TextView tvSignUp;
-    ImageButton backLogin;
+    ImageView backLogin;
+
+    private Animation animation;
+    private CardView tCard;
 
 
     @Override
@@ -50,20 +40,26 @@ public class RegisterActivity extends AppCompatActivity {
 
         regTab     = findViewById(R.id.tabReg);
         regPager   = findViewById(R.id.registerPager);
+        tCard = findViewById(R.id.cv2);
+        tvSignUp = findViewById(R.id.tvSignUp);
+        backLogin = findViewById(R.id.back_btn);
 
         setUpViewPager(regPager);
 
         regTab.setupWithViewPager(regPager);
-        regPager.setCurrentItem(1);
 
+
+        animation = AnimationUtils.loadAnimation(this, R.anim.uptodowndiagonal);
+        tCard.setAnimation(animation);
+        regPager.setAnimation(animation);
 
         backLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent   = new Intent(getApplicationContext(), LoginActivity.class);
+                Intent intent   = new Intent(RegisterActivity.this, LoginActivity.class);
                 Pair[] pairs    = new Pair[1];
                 pairs[0] = new Pair<View,String>(tvSignUp,"tvSignUp");
-                ActivityOptions activityOptions = ActivityOptions.makeSceneTransitionAnimation(getActivity(),pairs);
+                ActivityOptions activityOptions = ActivityOptions.makeSceneTransitionAnimation(RegisterActivity.this,pairs);
                 startActivity(intent,activityOptions.toBundle());
             }
         });
@@ -82,8 +78,8 @@ public class RegisterActivity extends AppCompatActivity {
 
     private void setUpViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(new TeacherFragment(),"Teacher");
         adapter.addFragment(new StudentFragment(),"Student");
+        adapter.addFragment(new TeacherFragment(),"Teacher");
         viewPager.setAdapter(adapter);
     }
 

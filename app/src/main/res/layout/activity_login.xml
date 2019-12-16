@@ -107,26 +107,26 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
-                        android:layout_marginLeft="10dp"
-                        android:text="Username"
+                        android:layout_marginStart="10dp"
+                        android:text="Email"
                         android:textColor="@color/colorPurple"
                         android:textSize="14sp"
                         android:textStyle="bold" />
 
                     <EditText
                         android:id="@+id/editTextEmail"
-                        android:drawableLeft="@drawable/people"
+                        android:drawableStart="@drawable/people"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
                         android:layout_marginRight="10dp"
-                        android:inputType="text" />
+                        android:inputType="textEmailAddress" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
-                        android:layout_marginLeft="10dp"
+                        android:layout_marginStart="10dp"
                         android:text="Password"
                         android:textColor="@color/colorPurple"
                         android:textSize="14sp"
@@ -134,7 +134,7 @@
 
                     <EditText
                         android:id="@+id/editTextPassword"
-                        android:drawableLeft="@drawable/lock"
+                        android:drawableStart="@drawable/lock"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
