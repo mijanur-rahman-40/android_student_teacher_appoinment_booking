@@ -13,22 +13,49 @@
         android:layout_height="150dp"
         android:background="@drawable/header_register" />
 
-    <ImageView
-        android:id="@+id/log_out_temp"
+    <androidx.cardview.widget.CardView
+        android:id="@+id/myImgCard"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="50dp"
-        android:src="@drawable/logout" />
-    <ImageView
-        android:id="@+id/users"
+        android:layout_marginTop="30dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="10dp"
+        app:cardElevation="10dp"
+        app:cardCornerRadius="25dp">
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/my_img"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/people" />
+        </RelativeLayout>
+    </androidx.cardview.widget.CardView>
+    <TextView
+        android:id="@+id/tvMyName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="50dp"
-        android:layout_marginLeft="100dp"
-        android:layout_toEndOf="@id/log_out_temp"
-        android:src="@drawable/people"
+        android:layout_toEndOf="@id/myImgCard"
+        android:layout_marginTop="40dp"
+        android:elevation="10dp"
+        android:transitionName="tvSignUp"
+        android:text="Myname"
+        android:textColor="@color/colorWhite"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+    <ImageView
+        android:id="@+id/option"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="40dp"
+        android:layout_marginEnd="20dp"
+        android:src="@drawable/ic_option"
         android:tint="@android:color/white"/>
 
     <androidx.cardview.widget.CardView

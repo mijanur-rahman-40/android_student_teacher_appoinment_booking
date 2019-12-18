@@ -78,8 +78,8 @@ public class RegisterActivity extends AppCompatActivity {
 
     private void setUpViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(new StudentFragment(),"Student");
-        adapter.addFragment(new TeacherFragment(),"Teacher");
+        adapter.addFragment(new StudentRegFragment(),"Student");
+        adapter.addFragment(new TeacherRegFragment(),"Teacher");
         viewPager.setAdapter(adapter);
     }
 

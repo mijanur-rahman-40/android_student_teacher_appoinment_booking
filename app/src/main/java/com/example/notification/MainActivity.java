@@ -3,9 +3,11 @@ package com.example.notification;
 import android.app.ActivityOptions;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
@@ -19,7 +21,7 @@ public class MainActivity extends AppCompatActivity {
     TabLayout tabMenu;
     ViewPager viewPager;
     private FirebaseAuth firebaseAuth;
-    ImageView logutBtn, users;
+    ImageView option;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,19 +35,32 @@ public class MainActivity extends AppCompatActivity {
         tabMenu     = findViewById(R.id.tabMenu);
         viewPager   = findViewById(R.id.viewPager);
 
-        logutBtn = findViewById(R.id.log_out_temp);
-        users = findViewById(R.id.users);
+        option = findViewById(R.id.option);
 
-        logutBtn.setOnClickListener(new View.OnClickListener() {
+        option.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                logOut();
-            }
-        });
-        users.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                goProfileActivity();
+                PopupMenu popupMenu = new PopupMenu(MainActivity.this, option);
+
+                popupMenu.getMenuInflater().inflate(R.menu.menu, popupMenu.getMenu());
+
+                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        switch (item.getItemId()){
+                            case(R.id.my_acc):
+                                goProfileActivity();
+                                return true;
+
+                            case (R.id.logout):
+                                logOut();
+                                return true;
+                            default:
+                                return true;
+                        }
+                    }
+                });
+                popupMenu.show();
             }
         });
 
@@ -58,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         adapter.addFragment(new NotificationFragment(),"Notification");
-        adapter.addFragment(new UserFragment(),"Trending");
+        adapter.addFragment(new MessageFragment(),"Messages");
         viewPager.setAdapter(adapter);
     }
 
@@ -86,4 +101,5 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
-}
+
+  }

@@ -24,7 +24,7 @@ public class AdapterDrink extends RecyclerView.Adapter<AdapterDrink.ViewHolder> 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.view_reg_user,viewGroup,false);
+        View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.view_student,viewGroup,false);
         ViewHolder viewHolder = new ViewHolder(v);
         return viewHolder;
     }
@@ -48,8 +48,8 @@ public class AdapterDrink extends RecyclerView.Adapter<AdapterDrink.ViewHolder> 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             foodname    = itemView.findViewById(R.id.tvFullName);
-            price       = itemView.findViewById(R.id.tvEmail);
-            img         = itemView.findViewById(R.id.img);
+            price       = itemView.findViewById(R.id.tvRegNo);
+            img         = itemView.findViewById(R.id.t_avatar);
         }
     }
 }
