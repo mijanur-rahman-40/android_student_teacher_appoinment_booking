@@ -10,16 +10,19 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.notification.activities.SendNotificationActivity;
+import com.example.notification.models.ModelStudent;
+
 import java.util.List;
 
 public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder> {
 
     private Context context;
-    private List<UserStudent> userStudentList;
+    private List<ModelStudent> modelStudentList;
 
-    public UserAdapter(Context context, List<UserStudent> userStudentList) {
+    public UserAdapter(Context context, List<ModelStudent> modelStudentList) {
         this.context = context;
-        this.userStudentList = userStudentList;
+        this.modelStudentList = modelStudentList;
     }
 
     @NonNull
@@ -31,14 +34,14 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull UserViewHolder holder, int position) {
-        UserStudent userStudent = userStudentList.get(position);
-        holder.textEmail.setText(userStudent.getEmail());
-        holder.textFulname.setText(userStudent.getFullName());
+        ModelStudent modelStudent = modelStudentList.get(position);
+        holder.textEmail.setText(modelStudent.getEmail());
+        holder.textFulname.setText(modelStudent.getFullName());
     }
 
     @Override
     public int getItemCount() {
-        return userStudentList.size();
+        return modelStudentList.size();
     }
 
     class UserViewHolder extends RecyclerView.ViewHolder {
@@ -54,9 +57,9 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    UserStudent userStudent = userStudentList.get(getAdapterPosition());
+                    ModelStudent modelStudent = modelStudentList.get(getAdapterPosition());
                     Intent intent = new Intent(context, SendNotificationActivity.class);
-                    intent.putExtra("userStudent", userStudent);
+                    intent.putExtra("modelStudent", modelStudent);
                     context.startActivity(intent);
 
                 }

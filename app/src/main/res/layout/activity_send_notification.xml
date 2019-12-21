@@ -7,7 +7,7 @@
     android:layout_margin="10dp"
     android:gravity="center"
     android:orientation="vertical"
-    tools:context=".SendNotificationActivity">
+    tools:context=".activities.SendNotificationActivity">
 
     <TextView
         android:id="@+id/textViewUser"

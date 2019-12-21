@@ -13,17 +13,18 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning">
-        <activity android:name=".StudentDetailsActivity"></activity>
+        <activity android:name=".activities.TeacherDetailsActivity"></activity>
+        <activity android:name=".activities.StudentDetailsActivity" />
         <activity
-            android:name=".RegisterActivity"
+            android:name=".activities.RegisterActivity"
             android:windowSoftInputMode="stateHidden" />
-        <activity android:name=".SendNotificationActivity" />
-        <activity android:name=".ProfileActivity" />
+        <activity android:name=".activities.SendNotificationActivity" />
+        <activity android:name=".activities.ProfileActivity" />
         <activity
-            android:name=".MainActivity"
+            android:name=".activities.MainActivity"
             android:theme="@style/Theme.AppCompat.DayNight.NoActionBar" />
         <activity
-            android:name=".LoginActivity"
+            android:name=".activities.LoginActivity"
             android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"
             android:windowSoftInputMode="stateHidden">
             <intent-filter>
