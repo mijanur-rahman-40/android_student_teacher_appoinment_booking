@@ -3,6 +3,7 @@ package com.example.notification.activities;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
@@ -19,6 +20,7 @@ public class StudentDetailsActivity extends AppCompatActivity {
     TextView name, dept, session, semester, regNo, email;
     Button sendBtn;
     ImageView backBtn;
+    ModelStudent modelStudent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,7 +34,7 @@ public class StudentDetailsActivity extends AppCompatActivity {
 
         setUpViews();
 
-        ModelStudent modelStudent =  (ModelStudent) getIntent().getSerializableExtra("modelStudent");
+        modelStudent =  (ModelStudent) getIntent().getSerializableExtra("modelStudent");
 
         if (modelStudent != null) {
             setToTheViews(modelStudent);
@@ -44,8 +46,21 @@ public class StudentDetailsActivity extends AppCompatActivity {
                 onBackPressed();
             }
         });
+        sendBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goToChatActivity();
+            }
+        });
 
 
+    }
+
+    private void goToChatActivity() {
+        Intent intent = new Intent(this, ChatActivity.class);
+
+        intent.putExtra("modelStudent", modelStudent);
+        startActivity(intent);
     }
 
 

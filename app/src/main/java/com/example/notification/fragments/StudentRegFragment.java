@@ -30,6 +30,7 @@ import com.google.firebase.database.FirebaseDatabase;
 public class StudentRegFragment extends Fragment {
 
     public static final String NODE_USERS = "users";
+    public static final String USER_TYPE= "student";
     private TextView tvSignUp;
     private EditText emailInput, fullnameInput, regNo, department, semester,session, passInput, rePassInput;
     private FirebaseAuth firebaseAuth;
@@ -165,8 +166,8 @@ public class StudentRegFragment extends Fragment {
 
     private void writeUser(String email, String fullName, String token, String regNo, String department, String semester, String session) {
 
-        ModelStudent modelStudent = new ModelStudent(email, fullName, token, regNo,department,semester,session);
-        databaseUser.child("students").child(token).setValue(modelStudent)
+        ModelStudent modelStudent = new ModelStudent(email, fullName, token, regNo,department,semester,session, USER_TYPE);
+        databaseUser.child(token).setValue(modelStudent)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {

@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activities.ChatActivity">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/bgHeader"
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:background="@drawable/header_register"
+            android:theme="@style/ToolbarTheme"
+            android:elevation="5dp" />
+
+        <ImageView
+            android:id="@+id/back_btn"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="30dp"
+            android:elevation="5dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:src="@drawable/ic_arrow_back"
+            android:layout_marginStart="20dp"/>
+
+        <TextView
+            android:id="@+id/tvUserName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="30dp"
+            android:elevation="10dp"
+            android:transitionName="tvSignUp"
+            android:text="Name"
+            android:textColor="@color/colorWhite"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/circle1"
+            android:layout_width="134dp"
+            android:layout_height="134dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginTop="115dp"
+            android:layout_marginBottom="225dp"
+            android:layout_marginEnd="-60dp"
+            android:layout_alignParentEnd="true"
+            android:src="@drawable/circletransparant" />
+
+        <ImageView
+            android:id="@+id/circle3"
+            android:layout_width="182dp"
+            android:layout_height="182dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginLeft="-18dp"
+            android:layout_marginBottom="-40dp"
+            android:src="@drawable/circle" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/messengerLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/bgHeader"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/reyclerview_message_list"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toTopOf="@id/layout_chatbox"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/checkOnline"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                android:orientation="vertical"
+                android:textAlignment="center"
+                android:background="@android:color/transparent"
+                android:textColor="@android:color/white"
+                android:text="You cannot chat until the device is connected!"
+                app:layout_constraintBottom_toBottomOf="@id/messengerLayout"
+                app:layout_constraintLeft_toLeftOf="parent"
+                android:visibility="invisible"
+                app:layout_constraintRight_toRightOf="parent"/>
+
+            <LinearLayout
+                android:id="@+id/layout_chatbox"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:minHeight="48dp"
+                android:orientation="horizontal"
+                android:layout_marginBottom="10dp"
+                app:layout_constraintBottom_toBottomOf="@id/messengerLayout"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent">
+
+                <ImageView
+                    android:id="@+id/file_chooser"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="10dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:padding="3dp"
+                    android:src="@drawable/insert_file" />
+                <ImageView
+                    android:id="@+id/voice"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:src="@drawable/voice_icon"
+                    android:layout_marginStart="10dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:padding="2dp"
+                    android:layout_gravity="center"
+                    />
+
+                <EditText
+                    android:id="@+id/edittext_chatbox"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:padding="10dp"
+                    android:textSize="12sp"
+                    android:background="@drawable/edit_text_style"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="16dp"
+                    android:layout_weight="1"
+                    android:textColor="@color/primaryTextColorDark"
+                    android:hint="Star typing"
+                    android:maxLines="6" />
+
+                <ImageButton
+                    android:id="@+id/button_chatbox_send"
+                    android:layout_width="64dp"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="bottom"
+                    android:src="@drawable/ic_send_24dp"
+                    android:background="@android:color/transparent"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center"
+                    android:textSize="18sp" />
+
+            </LinearLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </RelativeLayout>
+
+
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

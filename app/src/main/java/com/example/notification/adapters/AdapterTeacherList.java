@@ -41,7 +41,6 @@ public class AdapterTeacherList extends RecyclerView.Adapter<AdapterTeacherList.
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
         viewHolder.tName.setText(teacherList.get(i).getName());
         viewHolder.dept.setText(teacherList.get(i).getDept());
-        viewHolder.noOfReq.setText(teacherList.get(i).getNoOfStApll());
 
     }
 

@@ -2,6 +2,7 @@ package com.example.notification.fragments;
 
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,6 +29,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 
 /**
@@ -63,77 +65,62 @@ public class MessageFragment extends Fragment {
 
         getTeacherData();
 
-        getStudentData();
-
         return v;
     }
 
 
     private void getTeacherData() {
         tprogressBar.setVisibility(View.VISIBLE);
-
-        rvTeachers.setHasFixedSize(true);
-
-        modelTeacherList = new ArrayList<>();
-        rvTeachers.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL,false));
-
-
-        final FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("users").child("teachers");
-        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                tprogressBar.setVisibility(View.GONE);
-
-                if (dataSnapshot.exists()) {
-                    for (DataSnapshot dsUser : dataSnapshot.getChildren()) {
-                        ModelTeacher modelTeacher = dsUser.getValue(ModelTeacher.class);
-                        if (!modelTeacher.getToken().equals(firebaseUser.getUid()))
-                            modelTeacherList.add(modelTeacher);
-                    }
-                    AdapterTeacherList teacherAdapter = new AdapterTeacherList(modelTeacherList,getContext());
-                    rvTeachers.setAdapter(teacherAdapter);
-                } else {
-                    Toast.makeText(getContext(), "No user found", Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-    }
-
-
-    private void getStudentData() {
         sprogressBar.setVisibility(View.VISIBLE);
 
-        rvStudents.setHasFixedSize(true);
+        rvTeachers.setHasFixedSize(true);
+        modelTeacherList = new ArrayList<>();
 
+        rvStudents.setHasFixedSize(true);
         modelStudentList = new ArrayList<>();
+
+        rvTeachers.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL,false));
         rvStudents.setLayoutManager(new LinearLayoutManager(getActivity()));
 
 
         final FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("users").child("students");
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("users");
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
+                tprogressBar.setVisibility(View.GONE);
                 sprogressBar.setVisibility(View.GONE);
 
                 if (dataSnapshot.exists()) {
                     for (DataSnapshot dsUser : dataSnapshot.getChildren()) {
-                        ModelStudent modelStudent = dsUser.getValue(ModelStudent.class);
-                        if (!modelStudent.getToken().equals(firebaseUser.getUid()))
-                            modelStudentList.add(modelStudent);
+
+                        if (Objects.requireNonNull(dsUser.child("userType").getValue()).toString().equals("teacher")){
+                            ModelTeacher modelTeacher = dsUser.getValue(ModelTeacher.class);
+
+                            assert modelTeacher != null;
+                            assert firebaseUser != null;
+                            if (!modelTeacher.getToken().equals(firebaseUser.getUid()))
+                                modelTeacherList.add(modelTeacher);
+
+
+                        }
+                        if (dsUser.child("userType").getValue().toString().equals("student")){
+                            ModelStudent modelStudent = dsUser.getValue(ModelStudent.class);
+
+                            assert modelStudent != null;
+                            assert firebaseUser != null;
+                            if (!modelStudent.getToken().equals(firebaseUser.getUid()))
+                                modelStudentList.add(modelStudent);
+
+                        }
                     }
-                    AdapterStudentList teacherAdapter = new AdapterStudentList(modelStudentList, getContext());
-                    rvStudents.setAdapter(teacherAdapter);
+                    AdapterTeacherList teacherAdapter = new AdapterTeacherList(modelTeacherList,getContext());
+                    rvTeachers.setAdapter(teacherAdapter);
+
+                    AdapterStudentList studentAdapter = new AdapterStudentList(modelStudentList, getContext());
+                    rvStudents.setAdapter(studentAdapter);
                 } else {
                     Toast.makeText(getContext(), "No user found", Toast.LENGTH_SHORT).show();
                 }
@@ -145,4 +132,43 @@ public class MessageFragment extends Fragment {
             }
         });
     }
+
+
+//    private void getStudentData() {
+//        sprogressBar.setVisibility(View.VISIBLE);
+//
+//        rvStudents.setHasFixedSize(true);
+//
+//        modelStudentList = new ArrayList<>();
+//        rvStudents.setLayoutManager(new LinearLayoutManager(getActivity()));
+//
+//
+//        final FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+//
+//        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("users").child("students");
+//        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//
+//                sprogressBar.setVisibility(View.GONE);
+//
+//                if (dataSnapshot.exists()) {
+//                    for (DataSnapshot dsUser : dataSnapshot.getChildren()) {
+//                        ModelStudent modelStudent = dsUser.getValue(ModelStudent.class);
+//                        if (!modelStudent.getToken().equals(firebaseUser.getUid()))
+//                            modelStudentList.add(modelStudent);
+//                    }
+//                    AdapterStudentList teacherAdapter = new AdapterStudentList(modelStudentList, getContext());
+//                    rvStudents.setAdapter(teacherAdapter);
+//                } else {
+//                    Toast.makeText(getContext(), "No user found", Toast.LENGTH_SHORT).show();
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//            }
+//        });
+//    }
 }

@@ -28,6 +28,7 @@ import com.google.firebase.database.FirebaseDatabase;
 public class TeacherRegFragment extends Fragment {
 
     private static final String NODE_USERS = "users";
+    public static final String USER_TYPE= "teacher";
     private DatabaseReference databaseUser;
     private EditText emailInput, fullnameInput, passInput, rePassInput, deptInput, desigInput;
     private FirebaseAuth firebaseAuth;
@@ -148,8 +149,8 @@ public class TeacherRegFragment extends Fragment {
 
     private void writeUser(String name, String dept, String designation, String email, String token) {
 
-        ModelTeacher modelTeacher = new ModelTeacher(name,dept,designation,email,token);
-        databaseUser.child("teachers").child(token).setValue(modelTeacher)
+        ModelTeacher modelTeacher = new ModelTeacher(name,dept,designation,email,token,USER_TYPE);
+        databaseUser.child(token).setValue(modelTeacher)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {

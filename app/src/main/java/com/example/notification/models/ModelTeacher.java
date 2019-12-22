@@ -8,28 +8,20 @@ public class ModelTeacher implements Serializable {
     private String designation;
     private String email;
     private String token;
-    private String noOfStApll;
+    private String userType;
 
 
     public ModelTeacher() {
 
     }
 
-    public ModelTeacher(String name, String dept, String designation, String email, String token) {
+    public ModelTeacher(String name, String dept, String designation, String email, String token, String userType) {
         this.tName = name;
         this.dept = dept;
         this.designation = designation;
         this.email = email;
         this.token = token;
-    }
-
-    public ModelTeacher(String name, String dept, String designation, String email, String token, String noOfStApll) {
-        this.tName = name;
-        this.dept = dept;
-        this.designation = designation;
-        this.email = email;
-        this.token = token;
-        this.noOfStApll = noOfStApll;
+        this.userType = userType;
     }
 
     public String getName() {
@@ -63,6 +55,7 @@ public class ModelTeacher implements Serializable {
     public void setEmail(String email) {
         this.email = email;
     }
+
     public String getToken() {
         return token;
     }
@@ -71,11 +64,11 @@ public class ModelTeacher implements Serializable {
         this.token = token;
     }
 
-    public String getNoOfStApll() {
-        return noOfStApll;
+    public String getUserType() {
+        return userType;
     }
 
-    public void setNoOfStApll(String noOfStApll) {
-        this.noOfStApll = noOfStApll;
+    public void setUserType(String userType) {
+        this.userType = userType;
     }
 }

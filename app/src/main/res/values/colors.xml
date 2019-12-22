@@ -2,11 +2,15 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <color name="colorPrimary" tools:ignore="ReferenceType">@drawable/bg_rect</color>
     <color name="colorPrimaryDark">#F36A4DF1</color>
-    <color name="colorAccent">#D81B60</color>
+    <color name="colorAccent">#983CFF</color>
     <color name="colorWhite">#ffffff</color>
     <color name="colorPurple">#983CFF</color>
     <color name="colorPurpleT">#64983cff</color>
     <color name="colorBlue">#2FB4FF</color>
     <color name="colorBlueT">#642fb4ff</color>
     <color name="colorBlackT">#600E0E0E</color>
+    <color name="sentMessageColor">#2196F3</color>
+    <color name="primaryTextColor">#8B8B8B</color>
+    <color name="primaryTextColorDark">#BEBEBE</color>
+    <color name="receivedMessageColor">#E8353534</color>
 </resources>
