@@ -7,9 +7,9 @@
         android:topLeftRadius="30dp"
         android:topRightRadius="30dp">
     </corners>
-    <solid android:color="#7C747373" />
+    <solid android:color="#DCFFFFFF" />
     <stroke
-        android:color="#7E79B4"
-        android:width="1dp" />
+        android:color="@color/colorBlue"
+        android:width="2dp" />
 
 </shape>

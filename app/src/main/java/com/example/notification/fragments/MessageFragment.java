@@ -63,13 +63,13 @@ public class MessageFragment extends Fragment {
         sprogressBar = v.findViewById(R.id.sProgressBar);
         rvStudents = v.findViewById(R.id.rvStudent);
 
-        getTeacherData();
+        getUserData();
 
         return v;
     }
 
 
-    private void getTeacherData() {
+    private void getUserData() {
         tprogressBar.setVisibility(View.VISIBLE);
         sprogressBar.setVisibility(View.VISIBLE);
 
@@ -133,42 +133,4 @@ public class MessageFragment extends Fragment {
         });
     }
 
-
-//    private void getStudentData() {
-//        sprogressBar.setVisibility(View.VISIBLE);
-//
-//        rvStudents.setHasFixedSize(true);
-//
-//        modelStudentList = new ArrayList<>();
-//        rvStudents.setLayoutManager(new LinearLayoutManager(getActivity()));
-//
-//
-//        final FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-//
-//        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("users").child("students");
-//        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//
-//                sprogressBar.setVisibility(View.GONE);
-//
-//                if (dataSnapshot.exists()) {
-//                    for (DataSnapshot dsUser : dataSnapshot.getChildren()) {
-//                        ModelStudent modelStudent = dsUser.getValue(ModelStudent.class);
-//                        if (!modelStudent.getToken().equals(firebaseUser.getUid()))
-//                            modelStudentList.add(modelStudent);
-//                    }
-//                    AdapterStudentList teacherAdapter = new AdapterStudentList(modelStudentList, getContext());
-//                    rvStudents.setAdapter(teacherAdapter);
-//                } else {
-//                    Toast.makeText(getContext(), "No user found", Toast.LENGTH_SHORT).show();
-//                }
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//            }
-//        });
-//    }
 }

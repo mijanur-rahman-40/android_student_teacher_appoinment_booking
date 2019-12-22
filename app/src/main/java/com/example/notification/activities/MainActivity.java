@@ -8,7 +8,9 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
+import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
 
@@ -18,6 +20,14 @@ import com.example.notification.R;
 import com.example.notification.adapters.AdapterViewPager;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.Objects;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -26,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
     ViewPager viewPager;
     private FirebaseAuth firebaseAuth;
     ImageView option;
+    private TextView tvMyName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,11 +46,8 @@ public class MainActivity extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
 
-        firebaseAuth = FirebaseAuth.getInstance();
-        tabMenu     = findViewById(R.id.tabMenu);
-        viewPager   = findViewById(R.id.viewPager);
-
-        option = findViewById(R.id.option);
+        setupViews();
+        checkUserStatus();
 
         option.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -72,6 +80,46 @@ public class MainActivity extends AppCompatActivity {
 
         tabMenu.setupWithViewPager(viewPager);
         viewPager.setCurrentItem(1);  // 0 = drink , 1=food
+
+    }
+
+    private void setupViews() {
+        firebaseAuth = FirebaseAuth.getInstance();
+        tvMyName = findViewById(R.id.tvMyName);
+        tabMenu     = findViewById(R.id.tabMenu);
+        viewPager   = findViewById(R.id.viewPager);
+        option = findViewById(R.id.option);
+    }
+
+
+    private void checkUserStatus() {
+
+        final FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("users");
+
+        if (firebaseUser != null){
+            databaseReference.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.exists()) {
+                        for (DataSnapshot dsUser : dataSnapshot.getChildren()){
+                            if (Objects.requireNonNull(dsUser.child("token").getValue()).toString().equals(firebaseAuth.getUid())){
+                                String name = Objects.requireNonNull(dsUser.child("fullName").getValue()).toString();
+                                tvMyName.setText(name);
+                            }
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+        } else {
+
+        }
     }
 
     private void setupViewPager(ViewPager viewPager) {

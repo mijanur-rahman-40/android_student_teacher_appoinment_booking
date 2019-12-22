@@ -18,19 +18,19 @@
         android:id="@+id/back_btn"
         android:layout_width="30dp"
         android:layout_height="30dp"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="30dp"
         android:elevation="5dp"
         android:clickable="true"
         android:focusable="true"
         android:src="@drawable/ic_arrow_back"
-        android:layout_marginStart="20dp"/>
+        android:layout_marginStart="15dp"/>
 
     <TextView
         android:id="@+id/tvTName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="30dp"
         android:elevation="10dp"
         android:transitionName="tvSignUp"
         android:text="Name"

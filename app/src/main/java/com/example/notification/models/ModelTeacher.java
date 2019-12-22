@@ -3,7 +3,7 @@ package com.example.notification.models;
 import java.io.Serializable;
 
 public class ModelTeacher implements Serializable {
-    private String tName;
+    private String fullName;
     private String dept;
     private String designation;
     private String email;
@@ -15,8 +15,8 @@ public class ModelTeacher implements Serializable {
 
     }
 
-    public ModelTeacher(String name, String dept, String designation, String email, String token, String userType) {
-        this.tName = name;
+    public ModelTeacher(String fullName, String dept, String designation, String email, String token, String userType) {
+        this.fullName = fullName;
         this.dept = dept;
         this.designation = designation;
         this.email = email;
@@ -25,11 +25,11 @@ public class ModelTeacher implements Serializable {
     }
 
     public String getName() {
-        return tName;
+        return fullName;
     }
 
-    public void setName(String name) {
-        this.tName = name;
+    public void setName(String fullName) {
+        this.fullName = fullName;
     }
 
     public String getDept() {
