@@ -1,46 +1,63 @@
 package com.example.notification.models;
 
-import java.util.Date;
-
 
 public class ModelMessage {
 
-    private String message;
+    private String message, receiver, sender, dateTime;
 
-    private Date date;
-
-    private String userID;
+    private boolean isSeen;
 
 
-    public ModelMessage(String message, Date date, String userID) {
-        this.message = message;
-        this.date = date;
-        this.userID = userID;
+    public ModelMessage(){
+
     }
 
-    public void setMessage(String message) {
+
+    public ModelMessage(String message, String receiver, String sender, String dateTime, boolean isSeen) {
         this.message = message;
+        this.receiver = receiver;
+        this.sender = sender;
+        this.dateTime = dateTime;
+        this.isSeen = isSeen;
     }
 
     public String getMessage() {
         return message;
     }
 
-    public void setDate(Date date) {
-        this.date = date;
+    public void setMessage(String message) {
+        this.message = message;
     }
 
-    public Date getDate() {
-        return date;
+    public String getReceiver() {
+        return receiver;
     }
 
-    public void setUserID(String userID) {
-        this.userID = userID;
+    public void setReceiver(String receiver) {
+        this.receiver = receiver;
     }
 
-    public String getUserID() {
-        return userID;
+    public String getSender() {
+        return sender;
     }
 
+    public void setSender(String sender) {
+        this.sender = sender;
+    }
 
+    public String getDateTime() {
+        return dateTime;
+    }
+
+    public void setDateTime(String dateTime) {
+        this.dateTime = dateTime;
+    }
+
+    public boolean isSeen() {
+        return isSeen;
+    }
+
+    public void setSeen(boolean seen) {
+        isSeen = seen;
+    }
 }

@@ -71,7 +71,6 @@ public class StudentRegFragment extends Fragment {
         department = item.findViewById(R.id.dept_input);
         semester = item.findViewById(R.id.semester_input);
         session = item.findViewById(R.id.session_input);
-        firebaseAuth = FirebaseAuth.getInstance();
         databaseUser = FirebaseDatabase.getInstance().getReference(NODE_USERS);
 
     }
@@ -138,6 +137,7 @@ public class StudentRegFragment extends Fragment {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
+                            firebaseAuth = FirebaseAuth.getInstance();
                             writeUser(email, fullName, firebaseAuth.getUid(), registraion, departmentName,semesterYear,sessionAdmit);
                             startLoginActivity();
                         }

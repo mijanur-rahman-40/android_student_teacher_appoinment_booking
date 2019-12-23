@@ -1,8 +1,8 @@
 package com.example.notification.adapters;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,8 +14,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.notification.R;
 import com.example.notification.models.ModelMessage;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
-import java.text.SimpleDateFormat;
 import java.util.List;
 
 public class AdapterMessageList extends RecyclerView.Adapter<AdapterMessageList.MessageViewHolder> {
@@ -25,10 +26,12 @@ public class AdapterMessageList extends RecyclerView.Adapter<AdapterMessageList.
 
     private Context context;
 
+    private FirebaseUser firebaseUser;
+
 
     private List<ModelMessage> messageEntities;
 
-    AdapterMessageList(List<ModelMessage> messageEntities, Context context) {
+    public AdapterMessageList(List<ModelMessage> messageEntities, Context context) {
         this.messageEntities = messageEntities;
         this.context = context;
 
@@ -37,7 +40,10 @@ public class AdapterMessageList extends RecyclerView.Adapter<AdapterMessageList.
 
     @Override
     public int getItemViewType(int position) {
-        if (messageEntities.get(position).getUserID().equals("some id"))
+
+        firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+
+        if (messageEntities.get(position).getSender().equals(firebaseUser.getUid()))
             return SENT;
         return RECEIVED;
     }
@@ -55,13 +61,26 @@ public class AdapterMessageList extends RecyclerView.Adapter<AdapterMessageList.
 
     @Override
     public void onBindViewHolder(@NonNull MessageViewHolder messageViewHolder, int i) {
-        final ModelMessage m = messageEntities.get(i);
 
-        @SuppressLint("SimpleDateFormat") SimpleDateFormat format = new SimpleDateFormat("EEE, MMM dd  |  hh:mm a");
+        String message = messageEntities.get(i).getMessage();
+
+        messageViewHolder.text.setText(message);
+
+        if (messageEntities.get(i).isSeen()){
+            messageViewHolder.date.setText("Seen");
+        } else {
+            messageViewHolder.date.setText("Delivered");
+        }
+
+        if (i == messageEntities.size()-1){
+            messageViewHolder.date.setVisibility(View.VISIBLE);
+
+        } else {
+            messageViewHolder.date.setVisibility(View.GONE);
+
+        }
 
 
-        messageViewHolder.text.setText(m.getMessage());
-        messageViewHolder.date.setText(format.format(m.getDate()));
         messageViewHolder.text.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
@@ -85,7 +104,7 @@ public class AdapterMessageList extends RecyclerView.Adapter<AdapterMessageList.
         return messageEntities.size();
     }
 
-    public class MessageViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class MessageViewHolder extends RecyclerView.ViewHolder {
         TextView text;
         TextView date;
 
@@ -93,27 +112,7 @@ public class AdapterMessageList extends RecyclerView.Adapter<AdapterMessageList.
             super(itemView);
             text = itemView.findViewById(R.id.messageText);
             date = itemView.findViewById(R.id.date);
-            text.setOnClickListener(this);
-        }
-
-        void setDateVisibility(Boolean p) {
-            if (p) {
-                date.setVisibility(View.VISIBLE);
-            } else {
-                date.setVisibility(View.GONE);
-            }
-        }
-
-        @Override
-        public void onClick(View view) {
-            ModelMessage entity = messageEntities.get(getAdapterPosition());
-
         }
     }
 
-
-    void updateData(List<ModelMessage> lst) {
-        messageEntities = lst;
-        notifyDataSetChanged();
-    }
 }

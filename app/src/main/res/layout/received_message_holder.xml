@@ -52,6 +52,7 @@
             android:layout_margin="2dp"
             android:text="Date"
             android:textSize="12sp"
+            android:visibility="gone"
             android:layout_below="@+id/messageText"
             android:textColor="@color/primaryTextColor"
             android:layout_toRightOf="@+id/avatar"

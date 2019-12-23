@@ -14,6 +14,7 @@
             android:layout_height="120dp"
             android:background="@drawable/header_register"
             android:theme="@style/ToolbarTheme"
+            android:isScrollContainer="false"
             android:elevation="5dp" />
 
         <ImageView
@@ -136,7 +137,7 @@
                 android:minHeight="48dp"
                 android:orientation="horizontal"
                 android:background="@color/colorWhite"
-                app:layout_constraintBottom_toBottomOf="@id/messengerLayout"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent">
 
