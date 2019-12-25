@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -16,6 +17,7 @@ import com.example.notification.models.ModelMessage;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -27,13 +29,15 @@ public class AdapterMessageList extends RecyclerView.Adapter<AdapterMessageList.
     private Context context;
 
     private FirebaseUser firebaseUser;
+    private String hisImage;
 
 
     private List<ModelMessage> messageEntities;
 
-    public AdapterMessageList(List<ModelMessage> messageEntities, Context context) {
+    public AdapterMessageList(List<ModelMessage> messageEntities, Context context, String hisImage) {
         this.messageEntities = messageEntities;
         this.context = context;
+        this.hisImage = hisImage;
 
     }
 
@@ -65,6 +69,14 @@ public class AdapterMessageList extends RecyclerView.Adapter<AdapterMessageList.
         String message = messageEntities.get(i).getMessage();
 
         messageViewHolder.text.setText(message);
+        if (getItemViewType(i)==RECEIVED){
+            try {
+                Picasso.get().load(hisImage).into(messageViewHolder.avatar);
+                Log.i("GOT", hisImage);
+            } catch (Exception e){
+                Picasso.get().load(R.drawable.avatar).into(messageViewHolder.avatar);
+            }
+        }
 
         if (messageEntities.get(i).isSeen()){
             messageViewHolder.date.setText("Seen");
@@ -72,7 +84,7 @@ public class AdapterMessageList extends RecyclerView.Adapter<AdapterMessageList.
             messageViewHolder.date.setText("Delivered");
         }
 
-        if (i == messageEntities.size()-1){
+        if (i == messageEntities.size()-1 && getItemViewType(i)==SENT){
             messageViewHolder.date.setVisibility(View.VISIBLE);
 
         } else {
@@ -107,11 +119,13 @@ public class AdapterMessageList extends RecyclerView.Adapter<AdapterMessageList.
     public class MessageViewHolder extends RecyclerView.ViewHolder {
         TextView text;
         TextView date;
+        ImageView avatar;
 
-        MessageViewHolder(@NonNull final View itemView) {
+        MessageViewHolder(@NonNull View itemView) {
             super(itemView);
             text = itemView.findViewById(R.id.messageText);
             date = itemView.findViewById(R.id.date);
+            avatar = itemView.findViewById(R.id.r_avatar);
         }
     }
 

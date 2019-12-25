@@ -36,7 +36,6 @@ public class AdapterNotification extends RecyclerView.Adapter<AdapterNotificatio
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
         viewHolder.foodname.setText(drinkList.get(i).getdrinkName());
         viewHolder.price.setText("Rp."+drinkList.get(i).getPrice());
-        viewHolder.img.setImageResource(drinkList.get(i).getImg());
     }
 
     @Override
@@ -46,13 +45,11 @@ public class AdapterNotification extends RecyclerView.Adapter<AdapterNotificatio
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public TextView foodname,price;
-        public ImageView img;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             foodname    = itemView.findViewById(R.id.tvFullName);
             price       = itemView.findViewById(R.id.tvRegNo);
-            img         = itemView.findViewById(R.id.t_avatar);
         }
     }
 }

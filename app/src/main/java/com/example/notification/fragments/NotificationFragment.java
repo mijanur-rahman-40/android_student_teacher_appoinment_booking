@@ -26,7 +26,6 @@ public class NotificationFragment extends Fragment {
     AdapterNotification mAdapter;
     String drinks[]={"drink1","drink2","drink3","drink4"};
     String price[]={"5000","10000","5000","10000"};
-    int img[]={R.drawable.people,R.drawable.people,R.drawable.people,R.drawable.people};
     public NotificationFragment() {
         // Required empty public constructor
     }
@@ -56,7 +55,6 @@ public class NotificationFragment extends Fragment {
             DataDrink drink = new DataDrink();
             drink.setdrinkName(drinks[i]);
             drink.setPrice(price[i]);
-            drink.setImg(img[i]);
             dataDrinks.add(drink);
         }
         return dataDrinks;

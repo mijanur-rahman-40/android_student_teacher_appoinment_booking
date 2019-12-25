@@ -145,7 +145,9 @@ public class LoginActivity extends AppCompatActivity {
         super.onStart();
 
         if (firebaseAuth.getCurrentUser() != null) {
+
             startMainActivity();
+
         }
 
     }

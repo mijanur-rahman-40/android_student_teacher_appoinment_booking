@@ -2,7 +2,6 @@ package com.example.notification.fragments;
 
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,11 +13,11 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.notification.models.ModelStudent;
 import com.example.notification.R;
-import com.example.notification.models.ModelTeacher;
 import com.example.notification.adapters.AdapterStudentList;
 import com.example.notification.adapters.AdapterTeacherList;
+import com.example.notification.models.ModelStudent;
+import com.example.notification.models.ModelTeacher;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -32,9 +31,6 @@ import java.util.List;
 import java.util.Objects;
 
 
-/**
- * A simple {@link Fragment} subclass.
- */
 public class MessageFragment extends Fragment {
 
 
@@ -103,7 +99,6 @@ public class MessageFragment extends Fragment {
                             assert firebaseUser != null;
                             if (!modelTeacher.getToken().equals(firebaseUser.getUid()))
                                 modelTeacherList.add(modelTeacher);
-
 
                         }
                         if (dsUser.child("userType").getValue().toString().equals("student")){

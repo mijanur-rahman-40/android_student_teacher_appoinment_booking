@@ -3,6 +3,7 @@ package com.example.notification.activities;
 import android.app.ActivityOptions;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
@@ -18,6 +19,8 @@ import com.example.notification.fragments.MessageFragment;
 import com.example.notification.fragments.NotificationFragment;
 import com.example.notification.R;
 import com.example.notification.adapters.AdapterViewPager;
+import com.example.notification.models.ModelStudent;
+import com.example.notification.models.ModelTeacher;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -26,6 +29,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
 import java.util.Objects;
 
@@ -35,8 +39,12 @@ public class MainActivity extends AppCompatActivity {
     TabLayout tabMenu;
     ViewPager viewPager;
     private FirebaseAuth firebaseAuth;
-    ImageView option;
+    ImageView option, myImg;
     private TextView tvMyName;
+    private String userType, name, imageLink;
+    ModelTeacher modelTeacher;
+    ModelStudent modelStudent;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +84,13 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        myImg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goProfileActivity();
+            }
+        });
+
         setupViewPager(viewPager);
 
         tabMenu.setupWithViewPager(viewPager);
@@ -89,6 +104,7 @@ public class MainActivity extends AppCompatActivity {
         tabMenu     = findViewById(R.id.tabMenu);
         viewPager   = findViewById(R.id.viewPager);
         option = findViewById(R.id.option);
+        myImg = findViewById(R.id.my_img);
     }
 
 
@@ -105,8 +121,28 @@ public class MainActivity extends AppCompatActivity {
                     if (dataSnapshot.exists()) {
                         for (DataSnapshot dsUser : dataSnapshot.getChildren()){
                             if (Objects.requireNonNull(dsUser.child("token").getValue()).toString().equals(firebaseAuth.getUid())){
-                                String name = Objects.requireNonNull(dsUser.child("fullName").getValue()).toString();
+                                userType = Objects.requireNonNull(dsUser.child("userType").getValue()).toString();
+                                if (userType.equals("teacher")){
+                                    modelTeacher = dsUser.getValue(ModelTeacher.class);
+                                    assert modelTeacher != null;
+                                    name = modelTeacher.getName();
+                                    imageLink = modelTeacher.getImageLink();
+                                    userType = modelTeacher.getUserType();
+                                } else if(userType.equals("student")){
+                                    modelStudent = dsUser.getValue(ModelStudent.class);
+                                    assert modelStudent != null;
+                                    name = modelStudent.getFullName();
+                                    imageLink = modelStudent.getImageLink();
+                                    userType = modelStudent.getUserType();
+                                }
+
                                 tvMyName.setText(name);
+                                try {
+                                    Picasso.get().load(imageLink).into(myImg);
+                                    Log.i("ImgUri", imageLink);
+                                } catch (Exception e){
+                                    Picasso.get().load(R.drawable.avatar).into(myImg);
+                                }
                             }
                         }
                     }
@@ -138,6 +174,13 @@ public class MainActivity extends AppCompatActivity {
 
     private void goProfileActivity(){
         Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
+
+        if (userType.equals("student")){
+            intent.putExtra("modelStudent", modelStudent);
+        } else {
+            intent.putExtra("modelTeacher", modelTeacher);
+        }
+
         startActivity(intent);
     }
 

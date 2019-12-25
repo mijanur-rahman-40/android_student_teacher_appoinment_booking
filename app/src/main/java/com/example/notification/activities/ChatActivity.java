@@ -1,6 +1,7 @@
 package com.example.notification.activities;
 
 import android.annotation.SuppressLint;
+import android.app.ActivityOptions;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -30,6 +31,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -41,12 +43,12 @@ public class ChatActivity extends AppCompatActivity {
 
     public static final String NODE_CHATS= "chats";
     private TextView userName;
-    private ImageView backBtn, fileChooser, voiceInput;
+    private ImageView backBtn, fileChooser, voiceInput, hisImg;
     private EditText messagInput;
     private ImageButton msgSend;
     private String myUid, hisUid;
-    private FirebaseAuth firebaseAuth;
     private String hisImage;
+    private FirebaseAuth firebaseAuth;
     private RecyclerView chatRecyle;
 
 
@@ -85,9 +87,21 @@ public class ChatActivity extends AppCompatActivity {
         if (modelStudent != null) {
             userName.setText(modelStudent.getFullName());
             hisUid = modelStudent.getToken();
+            hisImage = modelStudent.getImageLink();
+            try {
+                Picasso.get().load(modelStudent.getImageLink()).into(hisImg);
+            } catch (Exception e){
+                Picasso.get().load(R.drawable.avatar).into(hisImg);
+            }
         } else if (modelTeacher != null) {
             userName.setText(modelTeacher.getName());
             hisUid = modelTeacher.getToken();
+            hisImage = modelTeacher.getImageLink();
+            try {
+                Picasso.get().load(modelTeacher.getImageLink()).into(hisImg);
+            } catch (Exception e){
+                Picasso.get().load(R.drawable.avatar).into(hisImg);
+            }
         }
 
 
@@ -159,7 +173,7 @@ public class ChatActivity extends AppCompatActivity {
                         chatList.add(message);
                     }
 
-                    adapterChat = new AdapterMessageList(chatList, ChatActivity.this);
+                    adapterChat = new AdapterMessageList(chatList, ChatActivity.this, hisImage);
                     adapterChat.notifyDataSetChanged();
 
                     chatRecyle.setAdapter(adapterChat);
@@ -205,6 +219,7 @@ public class ChatActivity extends AppCompatActivity {
         voiceInput = findViewById(R.id.voice);
         messagInput = findViewById(R.id.edittext_chatbox);
         msgSend = findViewById(R.id.button_chatbox_send);
+        hisImg = findViewById(R.id.his_avatar);
         firebaseAuth = FirebaseAuth.getInstance();
         myUid = firebaseAuth.getUid();
         chatRecyle = findViewById(R.id.reyclerview_message_list);
@@ -216,5 +231,18 @@ public class ChatActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         userRefForSeen.removeEventListener(seenListener);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        if (firebaseAuth.getCurrentUser() == null) {
+            Intent intent = new Intent(this, LoginActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            ActivityOptions activityOptions = ActivityOptions.makeSceneTransitionAnimation(this);
+            startActivity(intent, activityOptions.toBundle());
+        }
+
     }
 }

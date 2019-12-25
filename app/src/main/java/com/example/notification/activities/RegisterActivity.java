@@ -22,6 +22,7 @@ import com.example.notification.fragments.StudentRegFragment;
 import com.example.notification.fragments.TeacherRegFragment;
 import com.example.notification.adapters.AdapterViewPager;
 import com.google.android.material.tabs.TabLayout;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -29,6 +30,7 @@ public class RegisterActivity extends AppCompatActivity {
     ViewPager regPager;
     TextView tvSignUp;
     ImageView backLogin;
+    FirebaseAuth firebaseAuth;
 
     private Animation animation;
     private CardView tCard;
@@ -47,6 +49,7 @@ public class RegisterActivity extends AppCompatActivity {
         tCard = findViewById(R.id.cv2);
         tvSignUp = findViewById(R.id.tvSignUp);
         backLogin = findViewById(R.id.back_btn);
+        firebaseAuth = FirebaseAuth.getInstance();
 
         setUpViewPager(regPager);
 
@@ -86,7 +89,6 @@ public class RegisterActivity extends AppCompatActivity {
         adapter.addFragment(new TeacherRegFragment(),"Teacher");
         viewPager.setAdapter(adapter);
     }
-
 
 
 //    private void writeNewUser(final String email, final String fullName, final String uid) {

@@ -1,73 +1,82 @@
 package com.example.notification.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.EditText;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+import androidx.cardview.widget.CardView;
 
 import com.example.notification.R;
-import com.example.notification.UserAdapter;
 import com.example.notification.models.ModelStudent;
+import com.example.notification.models.ModelTeacher;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.squareup.picasso.Picasso;
 
 public class ProfileActivity extends AppCompatActivity {
 
     public static final String NODE_USERS = "users";
     private FirebaseAuth firebaseAuth;
-    private List<ModelStudent> modelStudentList;
+    private Button addBtn, cancelBtn;
+    private ImageView tpImage, backBtn;
+    private CardView addCard;
+    ModelTeacher modelTeacher;
+    ModelStudent modelStudent;
+    private TextView tName, department, designation, email;
 
-    private ImageView backBtn, serchBtn;
-    private RecyclerView recyclerView;
-    private EditText searchInput;
-    TextView titleText;
-    boolean pressed = true;
 
-    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_profile);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-        //NotificationHelper.displayNotification(this,"title","body");
+
+        Intent intent = getIntent();
+        modelStudent = (ModelStudent) intent.getSerializableExtra("modelStudent");
+        modelTeacher = (ModelTeacher) intent.getSerializableExtra("modelTeacher");
+
 
         firebaseAuth = FirebaseAuth.getInstance();
-        progressBar = findViewById(R.id.progressBar);
-        backBtn = findViewById(R.id.back_btn);
-        serchBtn = findViewById(R.id.search_btn);
-        searchInput = findViewById(R.id.search_input);
-        titleText = findViewById(R.id.tvUserList);
+        if (modelStudent != null){
+            setContentView(R.layout.activity__student_profile);
 
-        serchBtn.setOnClickListener(new View.OnClickListener() {
+        } else if(modelTeacher != null){
+            setContentView(R.layout.activity_teacher_profile);
+            setupTeacherViews();
+            tName.setText(modelTeacher.getName());
+            department.setText("Department: "+modelTeacher.getDept());
+            designation.setText("Designation: "+modelTeacher.getDesignation());
+            email.setText("Email: "+modelTeacher.getEmail());
+            try {
+                Picasso.get().load(modelTeacher.getImageLink()).into(tpImage);
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+
+
+
+
+        addBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(pressed) {
-                    titleText.setVisibility(View.INVISIBLE);
-                    searchInput.setVisibility(View.VISIBLE);
-                } else {
-                    titleText.setVisibility(View.VISIBLE);
-                    searchInput.setVisibility(View.INVISIBLE);
+                v.setVisibility(View.GONE);
+                addCard.setVisibility(View.VISIBLE);
+            }
+        });
 
-                }
-                pressed = !pressed;
-
+        cancelBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addCard.setVisibility(View.GONE);
+                addBtn.setVisibility(View.VISIBLE);
             }
         });
 
@@ -79,8 +88,7 @@ public class ProfileActivity extends AppCompatActivity {
         });
 
 
-        //FirebaseMessaging.getInstance().subscribeToTopic("updates");
-        loadUsers();
+
 
         //this basically return a task
 //        FirebaseInstanceId.getInstance().getInstanceId()
@@ -98,56 +106,32 @@ public class ProfileActivity extends AppCompatActivity {
 //                });
     }
 
-    private void loadUsers() {
 
-        progressBar.setVisibility(View.VISIBLE);
+    private void setupTeacherViews() {
+        addBtn = findViewById(R.id.btnAddTime);
+        cancelBtn = findViewById(R.id.cancelBtn);
+        addCard = findViewById(R.id.addFreeTimeCard);
+        tName = findViewById(R.id.tvTPName);
+        department = findViewById(R.id.tPDept);
+        designation = findViewById(R.id.tPDesig);
+        email = findViewById(R.id.tPEmail);
+        tpImage = findViewById(R.id.tp_img);
+        backBtn = findViewById(R.id.back_btn);
 
-        modelStudentList = new ArrayList<>();
-        recyclerView = findViewById(R.id.recyclerView);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-
-        final FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("users");
-        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                progressBar.setVisibility(View.GONE);
-
-                if (dataSnapshot.exists()) {
-                    for (DataSnapshot dsUser : dataSnapshot.getChildren()) {
-                        ModelStudent modelStudent = dsUser.getValue(ModelStudent.class);
-                        if (!modelStudent.getToken().equals(firebaseUser.getUid()))
-                        modelStudentList.add(modelStudent);
-                    }
-                    UserAdapter userAdapter = new UserAdapter(ProfileActivity.this, modelStudentList);
-                    recyclerView.setAdapter(userAdapter);
-                } else {
-                    Toast.makeText(ProfileActivity.this, "No user found", Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
     }
 
-//
-//    @Override
-//    protected void onStart() {
-//        super.onStart();
-//
-//        if (firebaseAuth.getCurrentUser() == null) {
-//            Intent intent = new Intent(this, LoginActivity.class);
-//            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-//            startActivity(intent);
-//        }
-//
-//    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        if (firebaseAuth.getCurrentUser() == null) {
+            Intent intent = new Intent(this, LoginActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+        }
+
+    }
 //
 //    private void saveToken(String token) {
 //        String email = firebaseAuth.getCurrentUser().getEmail();

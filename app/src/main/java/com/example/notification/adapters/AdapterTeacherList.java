@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -16,6 +17,7 @@ import com.example.notification.activities.StudentDetailsActivity;
 import com.example.notification.activities.TeacherDetailsActivity;
 import com.example.notification.models.ModelStudent;
 import com.example.notification.models.ModelTeacher;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -41,6 +43,11 @@ public class AdapterTeacherList extends RecyclerView.Adapter<AdapterTeacherList.
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
         viewHolder.tName.setText(teacherList.get(i).getName());
         viewHolder.dept.setText(teacherList.get(i).getDept());
+        try {
+            Picasso.get().load(teacherList.get(i).getImageLink()).into(viewHolder.tImg);
+        } catch (Exception e){
+            Picasso.get().load(R.drawable.avatar).into(viewHolder.tImg);
+        }
 
     }
 
@@ -51,12 +58,14 @@ public class AdapterTeacherList extends RecyclerView.Adapter<AdapterTeacherList.
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public TextView tName,dept, noOfReq;
+        private ImageView tImg;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             tName    = itemView.findViewById(R.id.teacherName);
             dept       = itemView.findViewById(R.id.dept);
             noOfReq = itemView.findViewById(R.id.noOfApnt);
+            tImg = itemView.findViewById(R.id.t_avatar);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override

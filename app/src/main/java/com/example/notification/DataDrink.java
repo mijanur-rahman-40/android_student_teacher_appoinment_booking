@@ -3,16 +3,14 @@ package com.example.notification;
 public class DataDrink {
     String drinkName;
     String price;
-    int img;
 
     public DataDrink() {
 
     }
 
-    public DataDrink(String drinkName, String price, int img) {
+    public DataDrink(String drinkName, String price) {
         this.drinkName = drinkName;
         this.price = price;
-        this.img = img;
     }
 
     public String getdrinkName() {
@@ -31,11 +29,4 @@ public class DataDrink {
         this.price = price;
     }
 
-    public int getImg() {
-        return img;
-    }
-
-    public void setImg(int img) {
-        this.img = img;
-    }
 }

@@ -76,7 +76,7 @@
             android:layout_height="wrap_content">
 
             <ImageView
-                android:id="@+id/st_img"
+                android:id="@+id/std_img"
                 android:layout_width="120dp"
                 android:layout_height="120dp"
                 android:scaleType="centerCrop"

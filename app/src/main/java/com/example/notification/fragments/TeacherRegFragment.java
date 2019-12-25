@@ -147,9 +147,9 @@ public class TeacherRegFragment extends Fragment {
 
     }
 
-    private void writeUser(String name, String dept, String designation, String email, String token) {
+    private void writeUser(String fullName, String dept, String designation, String email, String token) {
 
-        ModelTeacher modelTeacher = new ModelTeacher(name,dept,designation,email,token,USER_TYPE);
+        ModelTeacher modelTeacher = new ModelTeacher(fullName,dept,designation,email,token,USER_TYPE, "");
         databaseUser.child(token).setValue(modelTeacher)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
@@ -162,7 +162,7 @@ public class TeacherRegFragment extends Fragment {
                 }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Toast.makeText(getContext(), "Data Saving failed!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Account Created But Data Saving failed!", Toast.LENGTH_SHORT).show();
             }
         });
 

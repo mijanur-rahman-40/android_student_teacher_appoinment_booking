@@ -71,6 +71,7 @@ public class StudentRegFragment extends Fragment {
         department = item.findViewById(R.id.dept_input);
         semester = item.findViewById(R.id.semester_input);
         session = item.findViewById(R.id.session_input);
+        firebaseAuth = FirebaseAuth.getInstance();
         databaseUser = FirebaseDatabase.getInstance().getReference(NODE_USERS);
 
     }
@@ -137,7 +138,6 @@ public class StudentRegFragment extends Fragment {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            firebaseAuth = FirebaseAuth.getInstance();
                             writeUser(email, fullName, firebaseAuth.getUid(), registraion, departmentName,semesterYear,sessionAdmit);
                             startLoginActivity();
                         }
@@ -166,7 +166,7 @@ public class StudentRegFragment extends Fragment {
 
     private void writeUser(String email, String fullName, String token, String regNo, String department, String semester, String session) {
 
-        ModelStudent modelStudent = new ModelStudent(email, fullName, token, regNo,department,semester,session, USER_TYPE);
+        ModelStudent modelStudent = new ModelStudent(email, fullName, token, regNo,department,semester,session, USER_TYPE, "");
         databaseUser.child(token).setValue(modelStudent)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
@@ -180,7 +180,7 @@ public class StudentRegFragment extends Fragment {
             @Override
             public void onFailure(@NonNull Exception e) {
                 Log.d("PROBLEM",e.toString());
-                Toast.makeText(getContext(), "Data Saving failed! ", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Account Created But Data Saving failed! ", Toast.LENGTH_SHORT).show();
             }
         });
 

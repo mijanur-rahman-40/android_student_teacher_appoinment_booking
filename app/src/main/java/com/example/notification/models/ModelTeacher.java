@@ -9,19 +9,21 @@ public class ModelTeacher implements Serializable {
     private String email;
     private String token;
     private String userType;
+    private String imageLink;
 
 
     public ModelTeacher() {
 
     }
 
-    public ModelTeacher(String fullName, String dept, String designation, String email, String token, String userType) {
+    public ModelTeacher(String fullName, String dept, String designation, String email, String token, String userType, String imageLink) {
         this.fullName = fullName;
         this.dept = dept;
         this.designation = designation;
         this.email = email;
         this.token = token;
         this.userType = userType;
+        this.imageLink = imageLink;
     }
 
     public String getName() {
@@ -70,5 +72,13 @@ public class ModelTeacher implements Serializable {
 
     public void setUserType(String userType) {
         this.userType = userType;
+    }
+
+    public String getImageLink() {
+        return imageLink;
+    }
+
+    public void setImageLink(String imageLink) {
+        this.imageLink = imageLink;
     }
 }

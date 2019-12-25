@@ -11,13 +11,14 @@ public class ModelStudent implements Serializable {
     private String semester;
     private String session;
     private String userType;
+    private String imageLink;
 
 
     public ModelStudent() {
 
     }
 
-    public ModelStudent(String email, String fullName, String token, String regNo, String department, String semester, String session, String userType) {
+    public ModelStudent(String email, String fullName, String token, String regNo, String department, String semester, String session, String userType, String imageLink) {
         this.email = email;
         this.fullName = fullName;
         this.token = token;
@@ -26,6 +27,7 @@ public class ModelStudent implements Serializable {
         this.semester = semester;
         this.session = session;
         this.userType = userType;
+        this.imageLink = imageLink;
     }
 
     public String getEmail() {
@@ -90,5 +92,13 @@ public class ModelStudent implements Serializable {
 
     public void setUserType(String userType) {
         this.userType = userType;
+    }
+
+    public String getImageLink() {
+        return imageLink;
+    }
+
+    public void setImageLink(String imageLink) {
+        this.imageLink = imageLink;
     }
 }

@@ -44,7 +44,7 @@
                 android:layout_height="wrap_content">
 
                 <ImageView
-                    android:id="@+id/t_avatar"
+                    android:id="@+id/his_avatar"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:scaleType="centerCrop"

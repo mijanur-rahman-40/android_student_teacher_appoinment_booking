@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -9,7 +10,7 @@
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/bgHeader"
         android:layout_width="match_parent"
-        android:layout_height="150dp"
+        android:layout_height="130dp"
         android:background="@drawable/header_register"
         android:theme="@style/ToolbarTheme"
         android:elevation="5dp" />
@@ -69,23 +70,23 @@
         android:layout_marginTop="10dp"
         android:layout_centerHorizontal="true"
         app:cardElevation="10dp"
-        app:cardCornerRadius="60dp">
+        app:cardCornerRadius="55dp">
 
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
 
             <ImageView
-                android:id="@+id/t_img"
-                android:layout_width="120dp"
-                android:layout_height="120dp"
+                android:id="@+id/td_img"
+                android:layout_width="110dp"
+                android:layout_height="110dp"
                 android:scaleType="centerCrop"
                 android:src="@drawable/people" />
         </RelativeLayout>
     </androidx.cardview.widget.CardView>
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/stDetailsCard"
+        android:id="@+id/tDetailsCard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
@@ -125,17 +126,51 @@
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
+
     <Button
         android:id="@+id/btnSendMsg"
         android:layout_width="250dp"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/stDetailsCard"
-        android:layout_margin="20dp"
+        android:layout_below="@+id/tDetailsCard"
+        android:layout_margin="5dp"
         android:layout_centerInParent="true"
         android:background="@drawable/bg_ui"
         android:text="Send Message"
         android:textAllCaps="false"
         android:textColor="@color/colorWhite" />
+
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/btnSendMsg"
+        android:layout_margin="10dp">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/freeTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:textStyle="bold"
+                android:textSize="18dp"
+                android:textColor="@android:color/black"
+                android:text="I am available at:"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/freeTimeRv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/colorBlueT"
+                android:layout_below="@+id/freeTitle"
+                android:layout_margin="10dp"/>
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+
 
 
 </RelativeLayout>
