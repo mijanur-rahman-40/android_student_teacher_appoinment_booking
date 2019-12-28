@@ -8,8 +8,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -36,12 +38,14 @@ import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
 
+    int count = 0;
     TabLayout tabMenu;
     ViewPager viewPager;
     private FirebaseAuth firebaseAuth;
     ImageView option, myImg;
     private TextView tvMyName;
     private String userType, name, imageLink;
+    LinearLayout namePhoto;
     ModelTeacher modelTeacher;
     ModelStudent modelStudent;
 
@@ -84,12 +88,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        myImg.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                goProfileActivity();
-            }
-        });
+
 
         setupViewPager(viewPager);
 
@@ -105,6 +104,7 @@ public class MainActivity extends AppCompatActivity {
         viewPager   = findViewById(R.id.viewPager);
         option = findViewById(R.id.option);
         myImg = findViewById(R.id.my_img);
+        namePhoto = findViewById(R.id.namePhoto);
     }
 
 
@@ -146,6 +146,13 @@ public class MainActivity extends AppCompatActivity {
                             }
                         }
                     }
+
+                    namePhoto.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            goProfileActivity();
+                        }
+                    });
                 }
 
                 @Override
@@ -173,6 +180,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void goProfileActivity(){
+        count = 0;
         Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
 
         if (userType.equals("student")){
@@ -197,4 +205,14 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-  }
+    @Override
+    public void onBackPressed() {
+        count++;
+        if (count == 2){
+            count = 0;
+            finishAffinity();
+        } else {
+            Toast.makeText(this, "Press again to exit.", Toast.LENGTH_SHORT).show();
+        }
+    }
+}

@@ -36,6 +36,7 @@ public class LoginActivity extends AppCompatActivity {
     2. Notification Builder -> to delete notification
     3. Notification Manager
     */
+    int count = 0;
     public static final String CHANNEL_ID = "123";
     private static final String CHANNEL_NAME = "simplified";
     private static final String CHANNEL_DESC = "simplified Notification";
@@ -100,6 +101,7 @@ public class LoginActivity extends AppCompatActivity {
         btRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                count = 0;
                 Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
                 Pair[] pairs = new Pair[1];
                 pairs[0] = new Pair<View, String>(tvLogin, "tvLogin");
@@ -153,9 +155,20 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void startMainActivity() {
+        count = 0;
         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
     }
 
+    @Override
+    public void onBackPressed() {
+        count++;
+        if (count == 2){
+            count = 0;
+            finishAffinity();
+        } else {
+            Toast.makeText(this, "Press again to exit.", Toast.LENGTH_SHORT).show();
+        }
+    }
 }

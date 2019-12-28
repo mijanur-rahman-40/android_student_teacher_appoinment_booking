@@ -24,7 +24,7 @@ public class NotificationFragment extends Fragment {
 
     RecyclerView rvDrink;
     AdapterNotification mAdapter;
-    String drinks[]={"drink1","drink2","drink3","drink4"};
+    String notifications[]={"Notification1","Notification2","Notification3","Notification4"};
     String price[]={"5000","10000","5000","10000"};
     public NotificationFragment() {
         // Required empty public constructor
@@ -51,9 +51,9 @@ public class NotificationFragment extends Fragment {
 
     private ArrayList<DataDrink> getData() {
         ArrayList<DataDrink> dataDrinks = new ArrayList<>();
-        for (int i = 0; i<drinks.length;i++){
+        for (int i = 0; i< notifications.length; i++){
             DataDrink drink = new DataDrink();
-            drink.setdrinkName(drinks[i]);
+            drink.setdrinkName(notifications[i]);
             drink.setPrice(price[i]);
             dataDrinks.add(drink);
         }

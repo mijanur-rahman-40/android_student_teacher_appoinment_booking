@@ -35,7 +35,7 @@ public class AdapterNotification extends RecyclerView.Adapter<AdapterNotificatio
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
         viewHolder.foodname.setText(drinkList.get(i).getdrinkName());
-        viewHolder.price.setText("Rp."+drinkList.get(i).getPrice());
+        viewHolder.price.setText(drinkList.get(i).getPrice());
     }
 
     @Override
