@@ -2,7 +2,6 @@ package com.example.notification.activities;
 
 import android.Manifest;
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -31,8 +30,19 @@ import androidx.core.content.ContextCompat;
 import com.example.notification.R;
 import com.example.notification.models.ModelStudent;
 import com.example.notification.models.ModelTeacher;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
+
+import java.util.HashMap;
 
 public class ProfileActivity extends AppCompatActivity {
 
@@ -44,20 +54,20 @@ public class ProfileActivity extends AppCompatActivity {
 
     String[] cameraPermissions;
     String[] storagePermissions;
-
     Uri image_uri;
-
-
+    String storePath = "imageLink";
+    ModelTeacher modelTeacher;
+    ModelStudent modelStudent;
+    private StorageReference storageReference;
     private FirebaseAuth firebaseAuth;
+    private FirebaseUser user;
+    private DatabaseReference databaseReference;
     private Button addBtn, cancelBtn;
     private ImageView tpImage, backBtn;
     private CardView addCard;
     private LinearLayout tpLayout, spLayout;
-    ModelTeacher modelTeacher;
-    ModelStudent modelStudent;
     private Animation animation;
     private TextView tName, department, designation, email, regNo, session, semester;
-
 
 
     @Override
@@ -71,29 +81,28 @@ public class ProfileActivity extends AppCompatActivity {
         storagePermissions = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
 
-
         Intent intent = getIntent();
         modelStudent = (ModelStudent) intent.getSerializableExtra("modelStudent");
         modelTeacher = (ModelTeacher) intent.getSerializableExtra("modelTeacher");
 
 
         firebaseAuth = FirebaseAuth.getInstance();
-        if (modelStudent != null){
+        user = firebaseAuth.getCurrentUser();
+        storageReference = FirebaseStorage.getInstance().getReference("profile_pictures");
+        databaseReference = FirebaseDatabase.getInstance().getReference("users");
+
+        if (modelStudent != null) {
             setContentView(R.layout.activity__student_profile);
             setupStudentViews();
             setActionsToStudent();
 
-        } else if(modelTeacher != null){
+        } else if (modelTeacher != null) {
             setContentView(R.layout.activity_teacher_profile);
 
             setupTeacherViews();
             setActionsToTeacher();
 
         }
-
-
-
-
 
 
         //this basically return a task
@@ -114,15 +123,15 @@ public class ProfileActivity extends AppCompatActivity {
 
     private void setActionsToStudent() {
         tName.setText(modelStudent.getFullName());
-        session.setText("Session: "+modelStudent.getSession());
-        semester.setText("Session: "+modelStudent.getSemester());
-        regNo.setText("Session: "+modelStudent.getRegNo());
-        department.setText("Department: "+modelStudent.getDepartment());
-        email.setText("Email: "+modelStudent.getEmail());
+        session.setText("Session: " + modelStudent.getSession());
+        semester.setText("Session: " + modelStudent.getSemester());
+        regNo.setText("Session: " + modelStudent.getRegNo());
+        department.setText("Department: " + modelStudent.getDepartment());
+        email.setText("Email: " + modelStudent.getEmail());
 
         try {
             Picasso.get().load(modelStudent.getImageLink()).into(tpImage);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -149,12 +158,12 @@ public class ProfileActivity extends AppCompatActivity {
 
     private void setActionsToTeacher() {
         tName.setText(modelTeacher.getName());
-        department.setText("Department: "+modelTeacher.getDept());
-        designation.setText("Designation: "+modelTeacher.getDesignation());
-        email.setText("Email: "+modelTeacher.getEmail());
+        department.setText("Department: " + modelTeacher.getDept());
+        designation.setText("Designation: " + modelTeacher.getDesignation());
+        email.setText("Email: " + modelTeacher.getEmail());
         try {
             Picasso.get().load(modelTeacher.getImageLink()).into(tpImage);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -201,16 +210,15 @@ public class ProfileActivity extends AppCompatActivity {
         builder.setItems(options, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                if (which == 0){
-                    if (!checkCameraPermission()){
+                if (which == 0) {
+                    if (!checkCameraPermission()) {
                         requestCameraPermission();
                     } else {
                         pickFromCamera();
                     }
 
-                }
-                else if (which == 1){
-                    if (!checkStoragePermission()){
+                } else if (which == 1) {
+                    if (!checkStoragePermission()) {
                         requestStoragePermission();
                     } else {
                         pickFromGallery();
@@ -239,17 +247,17 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
 
-    private boolean checkStoragePermission(){
+    private boolean checkStoragePermission() {
         boolean result = ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 == (PackageManager.PERMISSION_GRANTED);
         return result;
     }
 
-    private void requestStoragePermission(){
-        ActivityCompat.requestPermissions(this, storagePermissions, STORAGE_REQUEST_CODE );
+    private void requestStoragePermission() {
+        ActivityCompat.requestPermissions(this, storagePermissions, STORAGE_REQUEST_CODE);
     }
 
-    private boolean checkCameraPermission(){
+    private boolean checkCameraPermission() {
         boolean result = ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.CAMERA)
                 == (PackageManager.PERMISSION_GRANTED);
 
@@ -258,21 +266,21 @@ public class ProfileActivity extends AppCompatActivity {
         return result && result1;
     }
 
-    private void requestCameraPermission(){
-        ActivityCompat.requestPermissions(this, cameraPermissions, CAMERA_REQUEST_CODE );
+    private void requestCameraPermission() {
+        ActivityCompat.requestPermissions(this, cameraPermissions, CAMERA_REQUEST_CODE);
     }
 
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
 
-        switch (requestCode){
-            case CAMERA_REQUEST_CODE:{
-                if (grantResults.length > 0){
+        switch (requestCode) {
+            case CAMERA_REQUEST_CODE: {
+                if (grantResults.length > 0) {
                     boolean cameraAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
                     boolean writeStorageAccepted = grantResults[1] == PackageManager.PERMISSION_GRANTED;
 
-                    if (cameraAccepted && writeStorageAccepted){
+                    if (cameraAccepted && writeStorageAccepted) {
                         pickFromCamera();
                     } else {
                         Toast.makeText(this, "Please enable camera and storage permission", Toast.LENGTH_SHORT).show();
@@ -283,10 +291,10 @@ public class ProfileActivity extends AppCompatActivity {
 
             }
             case STORAGE_REQUEST_CODE: {
-                if (grantResults.length > 0){
+                if (grantResults.length > 0) {
                     boolean writeStorageAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
 
-                    if (writeStorageAccepted){
+                    if (writeStorageAccepted) {
                         pickFromGallery();
                     } else {
                         Toast.makeText(this, "Please enable storage permission", Toast.LENGTH_SHORT).show();
@@ -302,6 +310,13 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private void pickFromGallery() {
+        Intent galleryIntent = new Intent(Intent.ACTION_PICK);
+        galleryIntent.setType("image/*");
+        startActivityForResult(galleryIntent, IMAGE_PICK_GALLERY_CODE);
+    }
+
+    private void pickFromCamera() {
+
         ContentValues values = new ContentValues();
         values.put(MediaStore.Images.Media.TITLE, "Temp Pic");
         values.put(MediaStore.Images.Media.DESCRIPTION, "Temp Description");
@@ -313,21 +328,78 @@ public class ProfileActivity extends AppCompatActivity {
         cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, image_uri);
 
         startActivityForResult(cameraIntent, IMAGE_PICK_CAMERA_CODE);
+
     }
 
-    private void pickFromCamera() {
-        Intent galleryIntent = new Intent(Intent.ACTION_PICK);
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
 
-        startActivityForResult(galleryIntent, IMAGE_PICK_GALLERY_CODE);
-        
+        if (resultCode == RESULT_OK) {
+            if (requestCode == IMAGE_PICK_GALLERY_CODE) {
+                assert data != null;
+                image_uri = data.getData();
+                uploadProPic(image_uri);
+            }
+            if (requestCode == IMAGE_PICK_CAMERA_CODE) {
+                uploadProPic(image_uri);
+
+            }
+        }
+
+
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
+    private void uploadProPic(Uri uri) {
+        String filePath = user.getUid();
+        StorageReference storageReference1 = storageReference.child(filePath);
+
+        storageReference1.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                Task<Uri> uriTask = taskSnapshot.getStorage().getDownloadUrl();
+
+                while (!uriTask.isSuccessful()) ;
+                Uri downloadUri = uriTask.getResult();
+
+                if (uriTask.isSuccessful()) {
+                    HashMap<String, Object> results = new HashMap<>();
+
+                    assert downloadUri != null;
+                    results.put(storePath, downloadUri.toString());
+
+                    databaseReference.child(user.getUid()).updateChildren(results)
+                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    finish();
+                                    startActivity(getIntent());
+                                    Toast.makeText(ProfileActivity.this, "Image uploaded", Toast.LENGTH_SHORT).show();
+
+                                }
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Toast.makeText(ProfileActivity.this, "Error uploading!", Toast.LENGTH_SHORT).show();
+
+                                }
+                            });
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+
+            }
+        });
+    }
 
     @Override
     protected void onStart() {
         super.onStart();
 
-        if (firebaseAuth.getCurrentUser() == null) {
+        if (user == null) {
             Intent intent = new Intent(this, LoginActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
