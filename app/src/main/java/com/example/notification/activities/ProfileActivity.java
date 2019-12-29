@@ -63,7 +63,7 @@ public class ProfileActivity extends AppCompatActivity {
     private FirebaseUser user;
     private DatabaseReference databaseReference;
     private Button addBtn, cancelBtn;
-    private ImageView tpImage, backBtn;
+    private ImageView tpImage,spImage, backBtn;
     private CardView addCard;
     private LinearLayout tpLayout, spLayout;
     private Animation animation;
@@ -129,8 +129,15 @@ public class ProfileActivity extends AppCompatActivity {
         department.setText("Department: " + modelStudent.getDepartment());
         email.setText("Email: " + modelStudent.getEmail());
 
+        spImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                pickPhotoFrom();
+            }
+        });
+
         try {
-            Picasso.get().load(modelStudent.getImageLink()).into(tpImage);
+            Picasso.get().load(modelStudent.getImageLink()).into(spImage);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -147,7 +154,7 @@ public class ProfileActivity extends AppCompatActivity {
         tName = findViewById(R.id.tvName);
         department = findViewById(R.id.stPDept);
         email = findViewById(R.id.stPEmail);
-        tpImage = findViewById(R.id.stp_img);
+        spImage = findViewById(R.id.stp_img);
         regNo = findViewById(R.id.stPReg);
         spLayout = findViewById(R.id.sPLayout);
         session = findViewById(R.id.stPSes);
@@ -372,8 +379,6 @@ public class ProfileActivity extends AppCompatActivity {
                             .addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void aVoid) {
-                                    finish();
-                                    startActivity(getIntent());
                                     Toast.makeText(ProfileActivity.this, "Image uploaded", Toast.LENGTH_SHORT).show();
 
                                 }
