@@ -1,6 +1,9 @@
 package com.example.notification.activities;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -14,9 +17,12 @@ import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -42,6 +48,9 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 
 public class ProfileActivity extends AppCompatActivity {
@@ -58,17 +67,21 @@ public class ProfileActivity extends AppCompatActivity {
     String storePath = "imageLink";
     ModelTeacher modelTeacher;
     ModelStudent modelStudent;
+    DatePickerDialog datePickerDialog;
+    TimePickerDialog timePickerDialog;
+    Calendar cldr;
+    int day, month, year, hour, minute;
     private StorageReference storageReference;
     private FirebaseAuth firebaseAuth;
     private FirebaseUser user;
     private DatabaseReference databaseReference;
     private Button addBtn, cancelBtn;
-    private ImageView tpImage,spImage, backBtn;
+    private ImageView tpImage, spImage, backBtn;
     private CardView addCard;
     private LinearLayout tpLayout, spLayout;
     private Animation animation;
     private TextView tName, department, designation, email, regNo, session, semester;
-
+    private EditText datePick, startTimePick, endTimePick;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -161,6 +174,7 @@ public class ProfileActivity extends AppCompatActivity {
         semester = findViewById(R.id.stPSem);
         backBtn = findViewById(R.id.back_btn);
 
+
     }
 
     private void setActionsToTeacher() {
@@ -173,6 +187,27 @@ public class ProfileActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+
+        datePick.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setAppointmentDate(datePick);
+            }
+        });
+
+        startTimePick.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setAppointmentTime(startTimePick);
+            }
+        });
+        endTimePick.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setAppointmentTime(endTimePick);
+            }
+        });
 
         tpImage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -195,6 +230,9 @@ public class ProfileActivity extends AppCompatActivity {
         cancelBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                datePick.setText("");
+                startTimePick.setText("");
+                endTimePick.setText("");
                 addCard.setVisibility(View.GONE);
                 addBtn.setVisibility(View.VISIBLE);
             }
@@ -206,6 +244,50 @@ public class ProfileActivity extends AppCompatActivity {
                 onBackPressed();
             }
         });
+    }
+
+    private void setAppointmentDate(final EditText datePick) {
+        datePickerDialog = new DatePickerDialog(ProfileActivity.this,
+                new DatePickerDialog.OnDateSetListener() {
+
+                    @Override
+                    public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+
+                        @SuppressLint("SimpleDateFormat") SimpleDateFormat formatter = new SimpleDateFormat("dd MMMM, yyyy");
+
+                        Calendar cal = Calendar.getInstance();
+
+                        cal.setTimeInMillis(0);
+                        cal.set(year, monthOfYear, dayOfMonth, 0, 0, 0);
+                        Date date = cal.getTime();
+                        String dateTime = formatter.format(date);
+                        datePick.setText(dateTime);
+
+                    }
+                }, year, month, day);
+        datePickerDialog.show();
+    }
+
+    private void setAppointmentTime(final EditText timePick) {
+        timePickerDialog = new TimePickerDialog(ProfileActivity.this,
+                new TimePickerDialog.OnTimeSetListener() {
+
+                    @Override
+                    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+
+                        @SuppressLint("SimpleDateFormat") SimpleDateFormat formatter = new SimpleDateFormat("hh:mm a");
+
+                        Calendar cal = Calendar.getInstance();
+
+                        cal.setTimeInMillis(0);
+                        cal.set(0, 0, 0, hourOfDay, minute, 0);
+                        Date date = cal.getTime();
+                        String dateTime = formatter.format(date);
+                        timePick.setText(dateTime);
+
+                    }
+                }, hour, minute, false);
+        timePickerDialog.show();
     }
 
     private void pickPhotoFrom() {
@@ -250,6 +332,17 @@ public class ProfileActivity extends AppCompatActivity {
         email = findViewById(R.id.tPEmail);
         tpImage = findViewById(R.id.tp_img);
         backBtn = findViewById(R.id.back_btn);
+        datePick = findViewById(R.id.dateFreePick);
+        startTimePick = findViewById(R.id.startTimePick);
+        endTimePick = findViewById(R.id.endTimePick);
+
+        cldr = Calendar.getInstance();
+        day = cldr.get(Calendar.DAY_OF_MONTH);
+        month = cldr.get(Calendar.MONTH);
+        year = cldr.get(Calendar.YEAR);
+        hour = cldr.get(Calendar.HOUR_OF_DAY);
+        minute = cldr.get(Calendar.MINUTE);
+
 
     }
 

@@ -58,7 +58,7 @@ public class AdapterFreeTime extends RecyclerView.Adapter<AdapterFreeTime.FreeTi
         public FreeTimeviewHolder(@NonNull View itemView) {
             super(itemView);
 
-            date = itemView.findViewById(R.id.freeDate);
+            date = itemView.findViewById(R.id.freeDateTv);
             startTime = itemView.findViewById(R.id.freeStartTime);
             endTime = itemView.findViewById(R.id.freeEndTime);
 
