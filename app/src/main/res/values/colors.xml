@@ -8,6 +8,7 @@
     <color name="colorPurpleT">#64983cff</color>
     <color name="colorBlue">#2FB4FF</color>
     <color name="colorBlueT">#642fb4ff</color>
+    <color name="colorBlueDark">#D72FB4FF</color>
     <color name="colorBlackT">#600E0E0E</color>
     <color name="sentMessageColor">#2196F3</color>
     <color name="primaryTextColor">#8B8B8B</color>

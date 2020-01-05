@@ -1,14 +1,23 @@
 package com.example.notification.models;
 
-public class ModelFreeTime {
-    String freeDate;
-    String starttime;
-    String endTime;
+import java.io.Serializable;
 
-    public ModelFreeTime(String freeDate, String starttime, String endTime) {
+public class ModelFreeTime implements Serializable {
+    private String freeDate;
+    private String startTime;
+    private String endTime;
+    private String owner;
+    private String freeSlot;
+
+    public ModelFreeTime(){
+    }
+
+    public ModelFreeTime(String freeDate, String startTime, String endTime, String owner, String freeSlot) {
         this.freeDate = freeDate;
-        this.starttime = starttime;
+        this.startTime = startTime;
         this.endTime = endTime;
+        this.owner = owner;
+        this.freeSlot = freeSlot;
     }
 
     public String getFreeDate() {
@@ -19,12 +28,12 @@ public class ModelFreeTime {
         this.freeDate = freeDate;
     }
 
-    public String getStarttime() {
-        return starttime;
+    public String getStartTime() {
+        return startTime;
     }
 
-    public void setStarttime(String starttime) {
-        this.starttime = starttime;
+    public void setStartTime(String starttime) {
+        this.startTime = starttime;
     }
 
     public String getEndTime() {
@@ -33,5 +42,21 @@ public class ModelFreeTime {
 
     public void setEndTime(String endTime) {
         this.endTime = endTime;
+    }
+
+    public String getFreeSlot() {
+        return freeSlot;
+    }
+
+    public void setFreeSlot(String freeSlot) {
+        this.freeSlot = freeSlot;
+    }
+
+    public String getOwner() {
+        return owner;
+    }
+
+    public void setOwner(String owner) {
+        this.owner = owner;
     }
 }

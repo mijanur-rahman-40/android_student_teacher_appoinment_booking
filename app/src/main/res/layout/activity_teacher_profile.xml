@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.TeacherDetailsActivity">
+    tools:context=".activities.ProfileActivity">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/bgHeader"
@@ -145,8 +145,6 @@
                         android:textColor="@android:color/black"
                         android:padding="5dp"
                         android:text="Email"/>
-
-
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
@@ -155,11 +153,23 @@
                 android:id="@+id/btnAddTime"
                 android:layout_width="250dp"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dp"
+                android:layout_marginTop="10dp"
                 android:background="@drawable/bg_ui"
                 android:text="Add Free Time"
                 android:textAllCaps="false"
                 android:textColor="@color/colorWhite" />
+
+            <Button
+                android:id="@+id/cancelBtn"
+                android:layout_width="250dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:visibility="gone"
+                android:text="Cancel"
+                android:textAllCaps="false"
+                android:textColor="@android:color/white"
+                android:background="@drawable/bg_cancel"/>
+
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/addFreeTimeCard"
@@ -174,40 +184,89 @@
                     android:layout_margin="20dp"
                     android:gravity="center_horizontal"
                     android:orientation="vertical">
-                    <EditText
+                    <TextView
                         android:id="@+id/dateFreePick"
                         android:layout_width="match_parent"
-                        android:layout_height="40dp"
-                        android:editable="false"
+                        android:layout_height="wrap_content"
                         android:hint="Date"
+                        android:padding="5dp"
+                        android:textColor="@android:color/black"
                         android:layout_marginTop="5dp"
-                        android:layout_marginBottom="5dp"
-                        tools:ignore="Deprecated"
-                        android:focusable="true"
-                        android:clickable="true"/>
+                        android:textSize="18sp"
+                        android:gravity="center_vertical"
+                        android:drawableEnd="@drawable/calender"
+                        tools:ignore="Deprecated,UnusedAttribute"/>
 
-                    <EditText
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="2dp"
+                        android:layout_marginEnd="5dp"
+                        android:layout_marginStart="5dp"
+                        android:layout_marginBottom="5dp"
+                        android:background="@color/colorBlueDark"/>
+
+                    <TextView
                         android:id="@+id/startTimePick"
                         android:layout_width="match_parent"
-                        android:layout_height="40dp"
-                        android:editable="false"
+                        android:layout_height="wrap_content"
                         android:hint="Start Time"
                         android:layout_marginTop="5dp"
+                        android:padding="5dp"
+                        android:textSize="18sp"
+                        android:textColor="@android:color/black"
+                        android:gravity="center_vertical"
+                        android:drawableEnd="@drawable/clock"
+                        tools:ignore="Deprecated,UnusedAttribute"/>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="2dp"
+                        android:layout_marginEnd="5dp"
+                        android:layout_marginStart="5dp"
                         android:layout_marginBottom="5dp"
-                        tools:ignore="Deprecated"
-                        android:focusable="true"
-                        android:clickable="true" />
-                    <EditText
+                        android:background="@color/colorBlueDark"/>
+
+
+                    <TextView
                         android:id="@+id/endTimePick"
                         android:layout_width="match_parent"
-                        android:layout_height="40dp"
-                        android:editable="false"
+                        android:layout_height="wrap_content"
                         android:hint="End Time"
+                        android:padding="5dp"
+                        android:textSize="18sp"
+                        android:textColor="@android:color/black"
                         android:layout_marginTop="5dp"
+                        android:gravity="center_vertical"
+                        android:drawableEnd="@drawable/clock"
+                        tools:ignore="Deprecated,UnusedAttribute"/>
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="2dp"
+                        android:layout_marginEnd="5dp"
+                        android:layout_marginStart="5dp"
                         android:layout_marginBottom="5dp"
-                        tools:ignore="Deprecated"
-                        android:focusable="true"
-                        android:clickable="true" />
+                        android:background="@color/colorBlueDark"/>
+
+                    <TextView
+                        android:id="@+id/noOfSlot"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Meeting Slot"
+                        android:padding="5dp"
+                        android:textColor="@android:color/black"
+                        android:textSize="18sp"
+                        android:gravity="center_vertical"
+                        android:layout_marginTop="7dp"
+                        android:drawableEnd="@drawable/meeting"
+                        tools:ignore="Deprecated,UnusedAttribute"/>
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="2dp"
+                        android:layout_marginEnd="5dp"
+                        android:layout_marginStart="5dp"
+                        android:layout_marginBottom="5dp"
+                        android:background="@color/colorBlueDark"/>
+
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -223,15 +282,6 @@
                             android:text="Add"
                             android:textColor="@android:color/white"
                             android:background="@drawable/bg_ui"/>
-                        <Button
-                            android:id="@+id/cancelBtn"
-                            android:layout_width="120dp"
-                            android:layout_height="50dp"
-                            android:layout_marginStart="20dp"
-                            android:layout_marginEnd="20dp"
-                            android:text="Cancel"
-                            android:textColor="@android:color/white"
-                            android:background="@drawable/bg_cancel"/>
 
                     </LinearLayout>
                 </LinearLayout>

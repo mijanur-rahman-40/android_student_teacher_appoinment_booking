@@ -11,6 +11,8 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -21,6 +23,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -32,30 +35,41 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.notification.R;
+import com.example.notification.adapters.AdapterFreeTime;
+import com.example.notification.models.ModelFreeTime;
 import com.example.notification.models.ModelStudent;
 import com.example.notification.models.ModelTeacher;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 
 public class ProfileActivity extends AppCompatActivity {
 
-    public static final String NODE_USERS = "users";
+    private FirebaseAuth firebaseAuth;
+
     private static final int CAMERA_REQUEST_CODE = 100;
     private static final int STORAGE_REQUEST_CODE = 200;
     private static final int IMAGE_PICK_GALLERY_CODE = 300;
@@ -69,19 +83,25 @@ public class ProfileActivity extends AppCompatActivity {
     ModelStudent modelStudent;
     DatePickerDialog datePickerDialog;
     TimePickerDialog timePickerDialog;
+    NumberPicker numberPicker;
+    List<ModelFreeTime> freeTimeList;
+    AdapterFreeTime adapterFreeTime;
+    RecyclerView freeTimeRv;
+
+
+
     Calendar cldr;
     int day, month, year, hour, minute;
     private StorageReference storageReference;
-    private FirebaseAuth firebaseAuth;
     private FirebaseUser user;
     private DatabaseReference databaseReference;
-    private Button addBtn, cancelBtn;
+    private Button addFreeTimeBtn, submitBtn, cancelBtn;
     private ImageView tpImage, spImage, backBtn;
     private CardView addCard;
     private LinearLayout tpLayout, spLayout;
     private Animation animation;
     private TextView tName, department, designation, email, regNo, session, semester;
-    private EditText datePick, startTimePick, endTimePick;
+    private TextView datePick, startTimePick, endTimePick, freeSlot;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,7 +122,7 @@ public class ProfileActivity extends AppCompatActivity {
         firebaseAuth = FirebaseAuth.getInstance();
         user = firebaseAuth.getCurrentUser();
         storageReference = FirebaseStorage.getInstance().getReference("profile_pictures");
-        databaseReference = FirebaseDatabase.getInstance().getReference("users");
+        databaseReference = FirebaseDatabase.getInstance().getReference();
 
         if (modelStudent != null) {
             setContentView(R.layout.activity__student_profile);
@@ -114,8 +134,11 @@ public class ProfileActivity extends AppCompatActivity {
 
             setupTeacherViews();
             setActionsToTeacher();
+            retrieveMyAppointment();
 
         }
+
+
 
 
         //this basically return a task
@@ -216,14 +239,36 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
 
+        freeSlot.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                pickNumber();
+            }
+        });
 
-        addBtn.setOnClickListener(new View.OnClickListener() {
+        addFreeTimeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 v.setVisibility(View.GONE);
+                cancelBtn.setVisibility(View.VISIBLE);
                 addCard.setVisibility(View.VISIBLE);
                 animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.uptodown);
                 addCard.setAnimation(animation);
+            }
+        });
+
+        submitBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String date = datePick.getText().toString();
+                String startTime = startTimePick.getText().toString();
+                String endTime = endTimePick.getText().toString();
+                String slot = freeSlot.getText().toString();
+                String owner = user.getUid();
+
+                Log.i("ERROR", date + startTime+ owner);
+
+                storeFreeTimeToDatabase(date, startTime, endTime, owner, slot);
             }
         });
 
@@ -233,8 +278,11 @@ public class ProfileActivity extends AppCompatActivity {
                 datePick.setText("");
                 startTimePick.setText("");
                 endTimePick.setText("");
+                freeSlot.setText("");
                 addCard.setVisibility(View.GONE);
-                addBtn.setVisibility(View.VISIBLE);
+                addFreeTimeBtn.setVisibility(View.VISIBLE);
+                v.setVisibility(View.GONE);
+
             }
         });
 
@@ -246,7 +294,108 @@ public class ProfileActivity extends AppCompatActivity {
         });
     }
 
-    private void setAppointmentDate(final EditText datePick) {
+    private void storeFreeTimeToDatabase(String date, String startTime, String endTime, String owner, String slot) {
+
+        ModelFreeTime modelFreeTime = new ModelFreeTime(date, startTime, endTime, owner, slot);
+
+
+        databaseReference.child("freeTimes").push().setValue(modelFreeTime)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        datePick.setText("");
+                        startTimePick.setText("");
+                        endTimePick.setText("");
+                        freeSlot.setText("");
+                        addCard.setVisibility(View.GONE);
+                        addFreeTimeBtn.setVisibility(View.VISIBLE);
+                        cancelBtn.setVisibility(View.GONE);
+
+                        Toast.makeText(ProfileActivity.this, "Free Time Added", Toast.LENGTH_SHORT).show();
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(ProfileActivity.this, "Data Sent Failed", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void retrieveMyAppointment() {
+        freeTimeList = new ArrayList<>();
+
+        try {
+            DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("freeTimes");
+
+
+            dbRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    freeTimeList.clear();
+                    for (DataSnapshot ds : dataSnapshot.getChildren()){
+
+                        ModelFreeTime modelFreeTime = ds.getValue(ModelFreeTime.class);
+
+                        Log.i("Retrieve", ds.toString());
+
+                        assert modelFreeTime != null;
+                        if (modelFreeTime.getOwner().equals(user.getUid())){
+                            freeTimeList.add(modelFreeTime);
+                        }
+
+                        adapterFreeTime = new AdapterFreeTime(freeTimeList, getApplicationContext());
+
+                        LinearLayoutManager linearLayout = new LinearLayoutManager(getApplicationContext());
+
+                        freeTimeRv.setLayoutManager(linearLayout);
+
+                        freeTimeRv.setAdapter(adapterFreeTime);
+
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+
+    }
+
+    private void pickNumber() {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = getLayoutInflater();
+        View theView = inflater.inflate(R.layout.number_picker_dialog, null);
+        numberPicker = theView.findViewById(R.id.number_picker);
+
+        builder.setView(theView)
+                .setPositiveButton("Ok",new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        freeSlot.setText(String.valueOf(numberPicker.getValue()));
+                        Log.d("DBG","Price is: "+numberPicker.getValue());
+                    }
+                }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+
+        numberPicker.setMinValue(1);
+        numberPicker.setMaxValue(20);
+
+        builder.create();
+        builder.show();
+
+    }
+
+    private void setAppointmentDate(final TextView datePick) {
         datePickerDialog = new DatePickerDialog(ProfileActivity.this,
                 new DatePickerDialog.OnDateSetListener() {
 
@@ -268,7 +417,7 @@ public class ProfileActivity extends AppCompatActivity {
         datePickerDialog.show();
     }
 
-    private void setAppointmentTime(final EditText timePick) {
+    private void setAppointmentTime(final TextView timePick) {
         timePickerDialog = new TimePickerDialog(ProfileActivity.this,
                 new TimePickerDialog.OnTimeSetListener() {
 
@@ -322,7 +471,8 @@ public class ProfileActivity extends AppCompatActivity {
 
 
     private void setupTeacherViews() {
-        addBtn = findViewById(R.id.btnAddTime);
+        addFreeTimeBtn = findViewById(R.id.btnAddTime);
+        submitBtn = findViewById(R.id.addBtn);
         cancelBtn = findViewById(R.id.cancelBtn);
         addCard = findViewById(R.id.addFreeTimeCard);
         tName = findViewById(R.id.tvTPName);
@@ -335,6 +485,9 @@ public class ProfileActivity extends AppCompatActivity {
         datePick = findViewById(R.id.dateFreePick);
         startTimePick = findViewById(R.id.startTimePick);
         endTimePick = findViewById(R.id.endTimePick);
+        freeSlot = findViewById(R.id.noOfSlot);
+
+        freeTimeRv = findViewById(R.id.tFreeTimeRv);
 
         cldr = Calendar.getInstance();
         day = cldr.get(Calendar.DAY_OF_MONTH);
@@ -468,7 +621,7 @@ public class ProfileActivity extends AppCompatActivity {
                     assert downloadUri != null;
                     results.put(storePath, downloadUri.toString());
 
-                    databaseReference.child(user.getUid()).updateChildren(results)
+                    databaseReference.child("users").child(user.getUid()).updateChildren(results)
                             .addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void aVoid) {

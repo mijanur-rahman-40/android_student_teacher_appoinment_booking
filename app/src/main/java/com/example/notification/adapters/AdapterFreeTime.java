@@ -37,7 +37,7 @@ public class AdapterFreeTime extends RecyclerView.Adapter<AdapterFreeTime.FreeTi
     public void onBindViewHolder(@NonNull FreeTimeviewHolder holder, int position) {
 
         String freeDate = freeTimeList.get(position).getFreeDate();
-        String startTime = freeTimeList.get(position).getStarttime();
+        String startTime = freeTimeList.get(position).getStartTime();
         String endTime = freeTimeList.get(position).getEndTime();
 
         holder.date.setText(freeDate);

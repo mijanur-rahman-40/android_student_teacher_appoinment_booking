@@ -67,24 +67,6 @@ public class TeacherDetailsActivity extends AppCompatActivity {
             }
         });
 
-        freeTimeList = new ArrayList<>();
-
-        freeTimeList.add(new ModelFreeTime("12-12-19","12:30 PM","2:30 PM"));
-        freeTimeList.add(new ModelFreeTime("13-12-19","2:30 PM","5:30 PM"));
-        freeTimeList.add(new ModelFreeTime("12-12-19","12:30 PM","2:30 PM"));
-        freeTimeList.add(new ModelFreeTime("13-12-19","2:30 PM","5:30 PM"));
-        freeTimeList.add(new ModelFreeTime("12-12-19","12:30 PM","2:30 PM"));
-        freeTimeList.add(new ModelFreeTime("13-12-19","2:30 PM","5:30 PM"));
-
-        adapterFreeTime = new AdapterFreeTime(freeTimeList, this);
-
-        LinearLayoutManager linearLayout = new LinearLayoutManager(this);
-
-        freeTimeRv.setLayoutManager(linearLayout);
-
-        freeTimeRv.setAdapter(adapterFreeTime);
-
-
     }
 
     private void goToChatActivity() {
