@@ -24,7 +24,8 @@
         android:clickable="true"
         android:focusable="true"
         android:src="@drawable/ic_arrow_back"
-        android:layout_marginStart="15dp"/>
+        android:layout_marginStart="15dp"
+        tools:ignore="ContentDescription" />
 
     <TextView
         android:id="@+id/tvTPName"
@@ -86,244 +87,274 @@
     </androidx.cardview.widget.CardView>
 
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/teacherCard">
 
-        <LinearLayout
-
+        <RelativeLayout
             android:id="@+id/tPLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:gravity="center_horizontal">
+            android:layout_below="@id/teacherCard"
+            android:elevation="5dp">
+
+
             <androidx.cardview.widget.CardView
                 android:id="@+id/tProfileCard"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
                 app:cardCornerRadius="10dp">
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:padding="10dp"
-                    android:gravity="left">
+                    android:gravity="start">
 
                     <TextView
-                        android:id="@+id/tPDept"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="@android:color/black"
-                        android:padding="5dp"
-                        android:text="Department"/>
-
-                    <EditText
-                        android:id="@+id/edit_deptT"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:visibility="gone"/>
-
-                    <TextView
-                        android:id="@+id/tPDesig"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="@android:color/black"
-                        android:padding="5dp"
-                        android:text="designation"/>
-
-                    <EditText
-                        android:id="@+id/edit_desig"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:visibility="gone"/>
-                    <TextView
-                        android:id="@+id/tPEmail"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="@android:color/black"
-                        android:padding="5dp"
-                        android:text="Email"/>
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
-
-
-            <Button
-                android:id="@+id/btnAddTime"
-                android:layout_width="250dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/bg_ui"
-                android:text="Add Free Time"
-                android:textAllCaps="false"
-                android:textColor="@color/colorWhite" />
-
-            <Button
-                android:id="@+id/cancelBtn"
-                android:layout_width="250dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:visibility="gone"
-                android:text="Cancel"
-                android:textAllCaps="false"
-                android:textColor="@android:color/white"
-                android:background="@drawable/bg_cancel"/>
-
-
-            <androidx.cardview.widget.CardView
-                android:id="@+id/addFreeTimeCard"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:visibility="gone"
-                android:layout_margin="10dp">
-
-                <LinearLayout
+                    android:id="@+id/proDetails"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="20dp"
-                    android:gravity="center_horizontal"
-                    android:orientation="vertical">
-                    <TextView
-                        android:id="@+id/dateFreePick"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="Date"
-                        android:padding="5dp"
-                        android:textColor="@android:color/black"
-                        android:layout_marginTop="5dp"
-                        android:textSize="18sp"
-                        android:gravity="center_vertical"
-                        android:drawableEnd="@drawable/calender"
-                        tools:ignore="Deprecated,UnusedAttribute"/>
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="2dp"
-                        android:layout_marginEnd="5dp"
-                        android:layout_marginStart="5dp"
-                        android:layout_marginBottom="5dp"
-                        android:background="@color/colorBlueDark"/>
-
-                    <TextView
-                        android:id="@+id/startTimePick"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="Start Time"
-                        android:layout_marginTop="5dp"
-                        android:padding="5dp"
-                        android:textSize="18sp"
-                        android:textColor="@android:color/black"
-                        android:gravity="center_vertical"
-                        android:drawableEnd="@drawable/clock"
-                        tools:ignore="Deprecated,UnusedAttribute"/>
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="2dp"
-                        android:layout_marginEnd="5dp"
-                        android:layout_marginStart="5dp"
-                        android:layout_marginBottom="5dp"
-                        android:background="@color/colorBlueDark"/>
-
-
-                    <TextView
-                        android:id="@+id/endTimePick"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="End Time"
-                        android:padding="5dp"
-                        android:textSize="18sp"
-                        android:textColor="@android:color/black"
-                        android:layout_marginTop="5dp"
-                        android:gravity="center_vertical"
-                        android:drawableEnd="@drawable/clock"
-                        tools:ignore="Deprecated,UnusedAttribute"/>
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="2dp"
-                        android:layout_marginEnd="5dp"
-                        android:layout_marginStart="5dp"
-                        android:layout_marginBottom="5dp"
-                        android:background="@color/colorBlueDark"/>
-
-                    <TextView
-                        android:id="@+id/noOfSlot"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="Meeting Slot"
-                        android:padding="5dp"
-                        android:textColor="@android:color/black"
-                        android:textSize="18sp"
-                        android:gravity="center_vertical"
-                        android:layout_marginTop="7dp"
-                        android:drawableEnd="@drawable/meeting"
-                        tools:ignore="Deprecated,UnusedAttribute"/>
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="2dp"
-                        android:layout_marginEnd="5dp"
-                        android:layout_marginStart="5dp"
-                        android:layout_marginBottom="5dp"
-                        android:background="@color/colorBlueDark"/>
-
+                    android:text="Profile Details"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/colorBlue"
+                    android:drawableEnd="@drawable/eye"
+                    tools:ignore="RtlSymmetry" />
 
                     <LinearLayout
+                        android:id="@+id/tProLv"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:gravity="center_horizontal"
-                        android:layout_margin="10dp">
-                        <Button
-                            android:id="@+id/addBtn"
-                            android:layout_width="120dp"
-                            android:layout_height="50dp"
-                            android:layout_marginStart="20dp"
-                            android:layout_marginEnd="20dp"
-                            android:text="Add"
-                            android:textColor="@android:color/white"
-                            android:background="@drawable/bg_ui"/>
+                        android:orientation="vertical"
+                        android:visibility="gone">
 
+
+                        <TextView
+                            android:id="@+id/tPDept"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@android:color/black"
+                            android:padding="5dp"
+                            android:text="Department"/>
+
+                        <EditText
+                            android:id="@+id/edit_deptT"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:visibility="gone"
+                            tools:ignore="Autofill" />
+
+                        <TextView
+                            android:id="@+id/tPDesig"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@android:color/black"
+                            android:padding="5dp"
+                            android:text="designation"/>
+
+                        <EditText
+                            android:id="@+id/edit_desig"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:visibility="gone"/>
+                        <TextView
+                            android:id="@+id/tPEmail"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@android:color/black"
+                            android:padding="5dp"
+                            android:text="Email"/>
                     </LinearLayout>
+
+
                 </LinearLayout>
-
-
-
             </androidx.cardview.widget.CardView>
 
 
+<!--            <Button-->
+<!--                android:id="@+id/btnAddTime"-->
+<!--                android:layout_width="250dp"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginTop="10dp"-->
+<!--                android:background="@drawable/bg_ui"-->
+<!--                android:text="Add Free Time"-->
+<!--                android:textAllCaps="false"-->
+<!--                android:textColor="@color/colorWhite" />-->
+
+<!--            <Button-->
+<!--                android:id="@+id/cancelBtn"-->
+<!--                android:layout_width="250dp"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginTop="10dp"-->
+<!--                android:visibility="gone"-->
+<!--                android:text="Cancel"-->
+<!--                android:textAllCaps="false"-->
+<!--                android:textColor="@android:color/white"-->
+<!--                android:background="@drawable/bg_cancel"/>-->
+
+
+<!--            <androidx.cardview.widget.CardView-->
+<!--                android:id="@+id/addFreeTimeCard"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:visibility="gone"-->
+<!--                android:layout_margin="10dp">-->
+
+<!--                <LinearLayout-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_margin="20dp"-->
+<!--                    android:gravity="center_horizontal"-->
+<!--                    android:orientation="vertical">-->
+
+
+
+<!--                    <TextView-->
+<!--                        android:id="@+id/dateFreePick"-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:hint="Date"-->
+<!--                        android:padding="5dp"-->
+<!--                        android:textColor="@android:color/black"-->
+<!--                        android:layout_marginTop="5dp"-->
+<!--                        android:textSize="18sp"-->
+<!--                        android:gravity="center_vertical"-->
+<!--                        android:drawableEnd="@drawable/calender"-->
+<!--                        tools:ignore="Deprecated,UnusedAttribute"/>-->
+
+<!--                    <View-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="2dp"-->
+<!--                        android:layout_marginEnd="5dp"-->
+<!--                        android:layout_marginStart="5dp"-->
+<!--                        android:layout_marginBottom="5dp"-->
+<!--                        android:background="@color/colorBlueDark"/>-->
+
+<!--                    <TextView-->
+<!--                        android:id="@+id/startTimePick"-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:hint="Start Time"-->
+<!--                        android:layout_marginTop="5dp"-->
+<!--                        android:padding="5dp"-->
+<!--                        android:textSize="18sp"-->
+<!--                        android:textColor="@android:color/black"-->
+<!--                        android:gravity="center_vertical"-->
+<!--                        android:drawableEnd="@drawable/clock"-->
+<!--                        tools:ignore="Deprecated,UnusedAttribute"/>-->
+
+<!--                    <View-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="2dp"-->
+<!--                        android:layout_marginEnd="5dp"-->
+<!--                        android:layout_marginStart="5dp"-->
+<!--                        android:layout_marginBottom="5dp"-->
+<!--                        android:background="@color/colorBlueDark"/>-->
+
+
+<!--                    <TextView-->
+<!--                        android:id="@+id/endTimePick"-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:hint="End Time"-->
+<!--                        android:padding="5dp"-->
+<!--                        android:textSize="18sp"-->
+<!--                        android:textColor="@android:color/black"-->
+<!--                        android:layout_marginTop="5dp"-->
+<!--                        android:gravity="center_vertical"-->
+<!--                        android:drawableEnd="@drawable/clock"-->
+<!--                        tools:ignore="Deprecated,UnusedAttribute"/>-->
+<!--                    <View-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="2dp"-->
+<!--                        android:layout_marginEnd="5dp"-->
+<!--                        android:layout_marginStart="5dp"-->
+<!--                        android:layout_marginBottom="5dp"-->
+<!--                        android:background="@color/colorBlueDark"/>-->
+
+<!--                    <TextView-->
+<!--                        android:id="@+id/noOfSlot"-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:hint="Meeting Slot"-->
+<!--                        android:padding="5dp"-->
+<!--                        android:textColor="@android:color/black"-->
+<!--                        android:textSize="18sp"-->
+<!--                        android:gravity="center_vertical"-->
+<!--                        android:layout_marginTop="7dp"-->
+<!--                        android:drawableEnd="@drawable/meeting"-->
+<!--                        tools:ignore="Deprecated,UnusedAttribute"/>-->
+<!--                    <View-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="2dp"-->
+<!--                        android:layout_marginEnd="5dp"-->
+<!--                        android:layout_marginStart="5dp"-->
+<!--                        android:layout_marginBottom="5dp"-->
+<!--                        android:background="@color/colorBlueDark"/>-->
+
+
+<!--                    <LinearLayout-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:gravity="center_horizontal"-->
+<!--                        android:layout_margin="10dp">-->
+<!--                        <Button-->
+<!--                            android:id="@+id/addBtn"-->
+<!--                            android:layout_width="120dp"-->
+<!--                            android:layout_height="50dp"-->
+<!--                            android:layout_marginStart="20dp"-->
+<!--                            android:layout_marginEnd="20dp"-->
+<!--                            android:text="Add"-->
+<!--                            android:textColor="@android:color/white"-->
+<!--                            android:background="@drawable/bg_ui"/>-->
+
+<!--                    </LinearLayout>-->
+<!--                </LinearLayout>-->
+
+
+
+<!--            </androidx.cardview.widget.CardView>-->
 
             <androidx.cardview.widget.CardView
+                android:id="@+id/cv2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dp">
-                <LinearLayout
+                android:layout_below="@+id/tProfileCard"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                app:cardCornerRadius="10dp"
+                app:cardElevation="5dp">
+
+                <RelativeLayout
+                    android:id="@+id/aptTabLayout"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-                    <TextView
-                        android:id="@+id/freeTitle"
+                    android:layout_height="wrap_content">
+
+                    <com.google.android.material.tabs.TabLayout
+                        android:id="@+id/tabApt"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_margin="10dp"
-                        android:textStyle="bold"
-                        android:textSize="18sp"
-                        android:textColor="@android:color/black"
-                        android:text="My Appointment Schedule:"/>
+                        app:tabIndicatorHeight="0dp"
+                        app:tabSelectedTextColor="@color/colorPrimary"/>
 
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/tFreeTimeRv"
-                        android:layout_width="match_parent"
+                    <View
+                        android:layout_width="2dp"
                         android:layout_height="wrap_content"
-                        android:background="@color/colorBlueT"
-                        android:layout_margin="10dp"/>
-                </LinearLayout>
-
+                        android:layout_alignTop="@+id/tabApt"
+                        android:layout_alignBottom="@+id/tabApt"
+                        android:layout_centerHorizontal="true"
+                        android:background="@color/colorPurple"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="10dp" />
+                </RelativeLayout>
             </androidx.cardview.widget.CardView>
-        </LinearLayout>
-
-    </ScrollView>
 
 
-
+            <androidx.viewpager.widget.ViewPager
+                android:id="@+id/tAptPager"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@id/cv2" />
+        </RelativeLayout>
 
 </RelativeLayout>

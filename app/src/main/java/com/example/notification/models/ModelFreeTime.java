@@ -8,16 +8,18 @@ public class ModelFreeTime implements Serializable {
     private String endTime;
     private String owner;
     private String freeSlot;
+    private String scheduleID;
 
     public ModelFreeTime(){
     }
 
-    public ModelFreeTime(String freeDate, String startTime, String endTime, String owner, String freeSlot) {
+    public ModelFreeTime(String freeDate, String startTime, String endTime, String owner, String freeSlot, String scheduleID) {
         this.freeDate = freeDate;
         this.startTime = startTime;
         this.endTime = endTime;
         this.owner = owner;
         this.freeSlot = freeSlot;
+        this.scheduleID = scheduleID;
     }
 
     public String getFreeDate() {
@@ -59,4 +61,13 @@ public class ModelFreeTime implements Serializable {
     public void setOwner(String owner) {
         this.owner = owner;
     }
+
+    public String getScheduleID() {
+        return scheduleID;
+    }
+
+    public void setScheduleID(String scheduleID) {
+        this.scheduleID = scheduleID;
+    }
+
 }

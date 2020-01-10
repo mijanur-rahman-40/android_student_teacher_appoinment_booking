@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -20,6 +21,11 @@ import com.example.notification.adapters.AdapterFreeTime;
 import com.example.notification.models.ModelFreeTime;
 import com.example.notification.models.ModelTeacher;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -32,6 +38,7 @@ public class TeacherDetailsActivity extends AppCompatActivity {
     ImageView backBtn, tDImg;
     ModelTeacher modelTeacher;
     AdapterFreeTime adapterFreeTime;
+    DatabaseReference dbRef;
     RecyclerView freeTimeRv;
     List<ModelFreeTime> freeTimeList;
     FirebaseAuth firebaseAuth;
@@ -52,6 +59,7 @@ public class TeacherDetailsActivity extends AppCompatActivity {
 
         if (modelTeacher != null) {
             setToTheViews(modelTeacher);
+            retrieveAppointmentList();
         }
 
         backBtn.setOnClickListener(new View.OnClickListener() {
@@ -64,6 +72,41 @@ public class TeacherDetailsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 goToChatActivity();
+            }
+        });
+
+    }
+
+    private void retrieveAppointmentList() {
+        freeTimeList = new ArrayList<>();
+
+        dbRef = FirebaseDatabase.getInstance().getReference();
+
+        dbRef.child("freeTimes").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                freeTimeList.clear();
+                for (DataSnapshot ds : dataSnapshot.getChildren()){
+                    ModelFreeTime modelFreeTime = ds.getValue(ModelFreeTime.class);
+
+                    assert modelFreeTime != null;
+                    if (modelFreeTime.getOwner().equals(modelTeacher.getToken())){
+                        freeTimeList.add(modelFreeTime);
+                    }
+                }
+                adapterFreeTime = new AdapterFreeTime(freeTimeList, TeacherDetailsActivity.this, modelTeacher);
+
+                LinearLayoutManager linearLayout = new LinearLayoutManager(TeacherDetailsActivity.this);
+
+                freeTimeRv.setLayoutManager(linearLayout);
+
+                freeTimeRv.setAdapter(adapterFreeTime);
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
             }
         });
 
