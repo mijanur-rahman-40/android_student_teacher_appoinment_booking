@@ -55,8 +55,6 @@ public class StudentRegFragment extends Fragment {
             }
         });
 
-
-
         return itemView;
     }
 
