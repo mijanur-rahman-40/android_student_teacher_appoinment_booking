@@ -50,8 +50,6 @@ public class AdapterFreeTime extends RecyclerView.Adapter<AdapterFreeTime.FreeTi
     private FirebaseAuth firebaseAuth;
     private DatabaseReference dbRef;
 
-    String accSize, pendingSize;
-
     private Button applyBtn, cancelBtn, deleteBtn;
     private TextView dateTv, freeTimeTv, maxNoTv, aptDetails, reqApplyValue, accApplyValue;
 
@@ -99,8 +97,8 @@ public class AdapterFreeTime extends RecyclerView.Adapter<AdapterFreeTime.FreeTi
             @Override
             public void onClick(View v) {
                 if (Objects.requireNonNull(firebaseAuth.getCurrentUser()).getUid().equals(owner)){
-                    retrieveRequests(scheduleId);
-                    seeApointmentDeatails(freeDate, startTime, endTime, maxNo, pendingSize, accSize);
+
+                    seeApointmentDeatails(scheduleId,freeDate, startTime, endTime, maxNo);
                 } else {
                     applyForAppt(freeDate, startTime, endTime, scheduleId);
                 }
@@ -112,7 +110,7 @@ public class AdapterFreeTime extends RecyclerView.Adapter<AdapterFreeTime.FreeTi
 
     }
 
-    private void retrieveRequests(final String scheduleId) {
+    private void retrieveRequests(final String scheduleId, final TextView reqApplyValue, final TextView accApplyValue) {
 
         pendingrequests = new ArrayList<>();
         acceptedRequests = new ArrayList<>();
@@ -123,10 +121,11 @@ public class AdapterFreeTime extends RecyclerView.Adapter<AdapterFreeTime.FreeTi
 
         dbRef.addValueEventListener(new ValueEventListener() {
 
-
-
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                acceptedRequests.clear();
+                pendingrequests.clear();
 
                 for (DataSnapshot ds : dataSnapshot.getChildren()){
 
@@ -140,14 +139,17 @@ public class AdapterFreeTime extends RecyclerView.Adapter<AdapterFreeTime.FreeTi
                             acceptedRequests.add(modelRequest);
                         } else {
                             pendingrequests.add(modelRequest);
-
                         }
 
                     }
                 }
 
-                pendingSize = String.valueOf(pendingrequests.size());
-                accSize = String.valueOf(acceptedRequests.size());
+                String pendingSize = String.valueOf(pendingrequests.size());
+                String accSize = String.valueOf(acceptedRequests.size());
+
+                reqApplyValue.setText(pendingSize);
+                accApplyValue.setText(accSize);
+
 
                 Log.i("CHECK", String.valueOf(pendingrequests.size()));
 
@@ -158,6 +160,8 @@ public class AdapterFreeTime extends RecyclerView.Adapter<AdapterFreeTime.FreeTi
 
             }
         });
+
+
 
 
     }
@@ -248,7 +252,7 @@ public class AdapterFreeTime extends RecyclerView.Adapter<AdapterFreeTime.FreeTi
     }
 
     @SuppressLint("SetTextI18n")
-    private void seeApointmentDeatails(String freeDate, String startTime, String endTime, String maxNo, String pendSize, String accSize) {
+    private void seeApointmentDeatails(String scheduleId, String freeDate, String startTime, String endTime, String maxNo) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
 //            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 //            assert inflater != null;
@@ -268,8 +272,8 @@ public class AdapterFreeTime extends RecyclerView.Adapter<AdapterFreeTime.FreeTi
         reqApplyValue = theView.findViewById(R.id.reqApplyValue);
         accApplyValue = theView.findViewById(R.id.accApplyValue);
 
-        reqApplyValue.setText(pendSize);
-        accApplyValue.setText(accSize);
+        retrieveRequests(scheduleId, reqApplyValue, accApplyValue);
+
 
         dateTv.setText(freeDate);
         freeTimeTv.setText(startTime + " \nto " + endTime);
