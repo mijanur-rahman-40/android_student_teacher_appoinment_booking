@@ -13,7 +13,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.notification.R;
 import com.example.notification.adapters.AdapterFreeTime;
-import com.example.notification.models.ModelFreeTime;
+import com.example.notification.adapters.AdapterRequestList;
+import com.example.notification.models.ModelRequest;
 import com.example.notification.models.ModelTeacher;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -29,10 +30,9 @@ import java.util.List;
 
 public class TeacherRequestedScheduleFragment extends Fragment {
 
-    private List<ModelFreeTime> freeTimeList;
-    private AdapterFreeTime adapterFreeTime;
-    private RecyclerView teacherreqRv;
-    private ModelTeacher modelTeacher;
+    private List<ModelRequest> modelRequests;
+    private AdapterRequestList adapterRequestList;
+    private RecyclerView teacherReqRv;
 
     private FirebaseUser user;
     private FirebaseAuth firebaseAuth;
@@ -42,10 +42,6 @@ public class TeacherRequestedScheduleFragment extends Fragment {
     public TeacherRequestedScheduleFragment() {
         // Required empty public constructor
     }
-    public TeacherRequestedScheduleFragment(ModelTeacher modelTeacher) {
-        this.modelTeacher = modelTeacher;
-    }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -57,40 +53,42 @@ public class TeacherRequestedScheduleFragment extends Fragment {
         return itemView;
     }
 
+
+
     private void retrieveMyRequests() {
-        freeTimeList = new ArrayList<>();
+        modelRequests = new ArrayList<>();
 
         try {
-            DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("freeTimes");
+            DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("requests");
 
 
             dbRef.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    freeTimeList.clear();
+
+                    modelRequests.clear();
+
                     for (DataSnapshot ds : dataSnapshot.getChildren()){
 
-                        ModelFreeTime modelFreeTime = ds.getValue(ModelFreeTime.class);
+                        ModelRequest modelRequest = ds.getValue(ModelRequest.class);
 
                         Log.i("Retrieve", ds.toString());
 
-                        assert modelFreeTime != null;
-                        if (modelFreeTime.getOwner().equals(user.getUid())){
-                            freeTimeList.add(modelFreeTime);
+                        assert modelRequest != null;
+                        if (modelRequest.getSenderId().equals(user.getUid())){
+                            modelRequests.add(modelRequest);
                         }
-
                     }
 
-
-                    adapterFreeTime = new AdapterFreeTime(freeTimeList, getContext(), modelTeacher);
+                    adapterRequestList = new AdapterRequestList(modelRequests, getContext());
 
                     LinearLayoutManager linearLayout = new LinearLayoutManager(getContext());
 
-                    teacherreqRv.setLayoutManager(linearLayout);
+                    teacherReqRv.setLayoutManager(linearLayout);
 
-                    teacherreqRv.setAdapter(adapterFreeTime);
+                    teacherReqRv.setAdapter(adapterRequestList);
 
-                    Log.i("LIST", (String.valueOf(freeTimeList.size())));
+                    Log.i("LIST", (String.valueOf(modelRequests.size())));
                 }
 
                 @Override
@@ -104,11 +102,13 @@ public class TeacherRequestedScheduleFragment extends Fragment {
 
     }
 
+
+
     private void setUpView(View itemView) {
 
         firebaseAuth = FirebaseAuth.getInstance();
         user = firebaseAuth.getCurrentUser();
-        teacherreqRv = itemView.findViewById(R.id.teacherRequestRv);
+        teacherReqRv = itemView.findViewById(R.id.teacherRequestRv);
 
     }
 

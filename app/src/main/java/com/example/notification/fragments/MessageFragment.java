@@ -37,6 +37,9 @@ public class MessageFragment extends Fragment {
     private List<ModelTeacher> modelTeacherList;
     private List<ModelStudent> modelStudentList;
 
+    private ModelTeacher modelTrRequester;
+    private ModelStudent modelStRequester;
+
     private RecyclerView rvTeachers;
     private RecyclerView rvStudents;
 
@@ -97,24 +100,31 @@ public class MessageFragment extends Fragment {
 
                             assert modelTeacher != null;
                             assert firebaseUser != null;
-                            if (!modelTeacher.getToken().equals(firebaseUser.getUid()))
+                            if (modelTeacher.getToken().equals(firebaseUser.getUid())){
+                                modelTrRequester = modelTeacher;
+                            } else {
                                 modelTeacherList.add(modelTeacher);
+                            }
 
                         }
-                        if (dsUser.child("userType").getValue().toString().equals("student")){
+                        if (Objects.requireNonNull(dsUser.child("userType").getValue()).toString().equals("student")){
                             ModelStudent modelStudent = dsUser.getValue(ModelStudent.class);
 
                             assert modelStudent != null;
                             assert firebaseUser != null;
-                            if (!modelStudent.getToken().equals(firebaseUser.getUid()))
+                            if (modelStudent.getToken().equals(firebaseUser.getUid())){
+                                modelStRequester = modelStudent;
+                            } else {
                                 modelStudentList.add(modelStudent);
+                            }
 
                         }
                     }
-                    AdapterTeacherList teacherAdapter = new AdapterTeacherList(modelTeacherList,getContext());
+
+                    AdapterTeacherList teacherAdapter = new AdapterTeacherList(modelTeacherList, getContext(), modelTrRequester, modelStRequester);
                     rvTeachers.setAdapter(teacherAdapter);
 
-                    AdapterStudentList studentAdapter = new AdapterStudentList(modelStudentList, getContext());
+                    AdapterStudentList studentAdapter = new AdapterStudentList(modelStudentList, getContext()) ;
                     rvStudents.setAdapter(studentAdapter);
                 } else {
                     Toast.makeText(getContext(), "No user found", Toast.LENGTH_SHORT).show();

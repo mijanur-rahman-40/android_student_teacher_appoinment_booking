@@ -1,9 +1,6 @@
 package com.example.notification.activities;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
-import android.app.DatePickerDialog;
-import android.app.TimePickerDialog;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -12,66 +9,45 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.util.Log;
-import android.view.LayoutInflater;
+import android.text.Html;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.NumberPicker;
 import android.widget.TextView;
-import android.widget.TimePicker;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
 import com.example.notification.R;
-import com.example.notification.adapters.AdapterFreeTime;
 import com.example.notification.adapters.AdapterViewPager;
-import com.example.notification.fragments.StudentRegFragment;
 import com.example.notification.fragments.TeacherOwnSceduleFragment;
-import com.example.notification.fragments.TeacherRegFragment;
 import com.example.notification.fragments.TeacherRequestedScheduleFragment;
-import com.example.notification.models.ModelFreeTime;
 import com.example.notification.models.ModelStudent;
 import com.example.notification.models.ModelTeacher;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 
 public class ProfileActivity extends AppCompatActivity {
 
@@ -92,7 +68,7 @@ public class ProfileActivity extends AppCompatActivity {
     ViewPager aptPager;
     TabLayout aptTab;
 
-    boolean clicked = false;
+    boolean clicked = false, clicked2 = false;
 
 
     private StorageReference storageReference;
@@ -125,7 +101,7 @@ public class ProfileActivity extends AppCompatActivity {
         databaseReference = FirebaseDatabase.getInstance().getReference();
 
         if (modelStudent != null) {
-            setContentView(R.layout.activity__student_profile);
+            setContentView(R.layout.activity_student_profile);
             setupStudentViews();
             setActionsToStudent();
 
@@ -161,18 +137,25 @@ public class ProfileActivity extends AppCompatActivity {
     private void setUpViewPager(ViewPager aptPager) {
         AdapterViewPager adapter = new AdapterViewPager(getSupportFragmentManager());
         adapter.addFragment(new TeacherOwnSceduleFragment(modelTeacher),"Owned");
-        adapter.addFragment(new TeacherRequestedScheduleFragment(modelTeacher),"Requested");
+        adapter.addFragment(new TeacherRequestedScheduleFragment(),"Requested");
         aptPager.setAdapter(adapter);
 
     }
 
     private void setActionsToStudent() {
+        String depnt = "<b>"+"Department: "+"</b>"+ modelStudent.getDepartment();
+        String eml = "<b>"+"Email: "+"</b>"+ modelStudent.getEmail();
+        String ses = "<b>"+"Session: "+"</b>"+ modelStudent.getSession();
+        String sem = "<b>"+"Semester: "+"</b>"+ modelStudent.getSemester();
+        String reg = "<b>"+"Reg No: "+"</b>"+ modelStudent.getRegNo();
+
+
         tName.setText(modelStudent.getFullName());
-        session.setText("Session: " + modelStudent.getSession());
-        semester.setText("Session: " + modelStudent.getSemester());
-        regNo.setText("Session: " + modelStudent.getRegNo());
-        department.setText("Department: " + modelStudent.getDepartment());
-        email.setText("Email: " + modelStudent.getEmail());
+        session.setText(Html.fromHtml(ses));
+        semester.setText(Html.fromHtml(sem));
+        regNo.setText(Html.fromHtml(reg));
+        department.setText(Html.fromHtml(depnt));
+        email.setText(Html.fromHtml(eml));
 
         spImage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -193,6 +176,26 @@ public class ProfileActivity extends AppCompatActivity {
                 onBackPressed();
             }
         });
+
+        proDetails.setOnClickListener(new View.OnClickListener() {
+
+            Drawable hide = getResources().getDrawable(R.drawable.eye_off);
+            Drawable show = getResources().getDrawable(R.drawable.eye);
+
+            @Override
+            public void onClick(View v) {
+                clicked2 = !clicked2;
+                if (clicked2){
+                    tProLv.setVisibility(View.VISIBLE);
+                    proDetails.setCompoundDrawablesWithIntrinsicBounds( null, null, hide, null);
+                    animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.uptodown);
+                    tProLv.setAnimation(animation);
+                } else {
+                    tProLv.setVisibility(View.GONE);
+                    proDetails.setCompoundDrawablesWithIntrinsicBounds( null, null, show, null);
+                }
+            }
+        });
     }
 
     private void setupStudentViews() {
@@ -204,6 +207,8 @@ public class ProfileActivity extends AppCompatActivity {
         session = findViewById(R.id.stPSes);
         semester = findViewById(R.id.stPSem);
         backBtn = findViewById(R.id.back_btn);
+        proDetails = findViewById(R.id.proDetails);
+        tProLv= findViewById(R.id.tProLv);
 
     }
 
@@ -228,10 +233,15 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
 
+        String depnt = "<b>"+"Department: "+"</b>"+ modelTeacher.getDept();
+        String eml = "<b>"+"Email: "+"</b>"+ modelTeacher.getEmail();
+        String desig = "<b>"+"Designation: "+"</b>"+ modelTeacher.getDesignation();
+
+
         tName.setText(modelTeacher.getName());
-        department.setText("Department: " + modelTeacher.getDept());
-        designation.setText("Designation: " + modelTeacher.getDesignation());
-        email.setText("Email: " + modelTeacher.getEmail());
+        department.setText(Html.fromHtml(depnt));
+        designation.setText(Html.fromHtml(desig));
+        email.setText(Html.fromHtml(eml));
         try {
             Picasso.get().load(modelTeacher.getImageLink()).into(tpImage);
         } catch (Exception e) {

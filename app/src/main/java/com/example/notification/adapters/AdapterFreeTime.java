@@ -2,6 +2,8 @@ package com.example.notification.adapters;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.text.Html;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,20 +14,26 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.notification.R;
 import com.example.notification.models.ModelFreeTime;
 import com.example.notification.models.ModelRequest;
+import com.example.notification.models.ModelStudent;
 import com.example.notification.models.ModelTeacher;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -34,17 +42,29 @@ public class AdapterFreeTime extends RecyclerView.Adapter<AdapterFreeTime.FreeTi
 
     private Context context;
 
-    private ModelTeacher modelTeacher;
-
+    private ModelTeacher modelTeacher, tRequester;
+    private ModelStudent stRequester;
     private List<ModelFreeTime> freeTimeList;
+    private List<ModelRequest> pendingrequests, acceptedRequests;
+
     private FirebaseAuth firebaseAuth;
     private DatabaseReference dbRef;
 
+    String accSize, pendingSize;
+
     private Button applyBtn, cancelBtn, deleteBtn;
-    private TextView dateTv, freeTimeTv, maxNoTv, aptDetails;
+    private TextView dateTv, freeTimeTv, maxNoTv, aptDetails, reqApplyValue, accApplyValue;
 
 
-    public AdapterFreeTime(List<ModelFreeTime>freeTimeList, Context context, ModelTeacher modelTeacher){
+    public AdapterFreeTime(List<ModelFreeTime>freeTimeList, Context context, ModelTeacher modelTeacher, ModelStudent stRequester, ModelTeacher tRequester){
+        this.freeTimeList = freeTimeList;
+        this.context = context;
+        this.modelTeacher = modelTeacher;
+        this.stRequester = stRequester;
+        this.tRequester = tRequester;
+    }
+
+    public AdapterFreeTime(List<ModelFreeTime> freeTimeList, Context context, ModelTeacher modelTeacher) {
         this.freeTimeList = freeTimeList;
         this.context = context;
         this.modelTeacher = modelTeacher;
@@ -56,11 +76,13 @@ public class AdapterFreeTime extends RecyclerView.Adapter<AdapterFreeTime.FreeTi
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.view_free_time, parent, false);
 
         firebaseAuth = FirebaseAuth.getInstance();
+
         return new FreeTimeviewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull FreeTimeviewHolder holder, final int position) {
+
 
         final String freeDate = freeTimeList.get(position).getFreeDate();
         final String startTime = freeTimeList.get(position).getStartTime();
@@ -77,7 +99,8 @@ public class AdapterFreeTime extends RecyclerView.Adapter<AdapterFreeTime.FreeTi
             @Override
             public void onClick(View v) {
                 if (Objects.requireNonNull(firebaseAuth.getCurrentUser()).getUid().equals(owner)){
-                    seeApointmentDeatails(freeDate, startTime, endTime, maxNo);
+                    retrieveRequests(scheduleId);
+                    seeApointmentDeatails(freeDate, startTime, endTime, maxNo, pendingSize, accSize);
                 } else {
                     applyForAppt(freeDate, startTime, endTime, scheduleId);
                 }
@@ -89,13 +112,63 @@ public class AdapterFreeTime extends RecyclerView.Adapter<AdapterFreeTime.FreeTi
 
     }
 
-    private void applyForAppt(String freeDate, String startTime, String endTime, final String scheduleId) {
+    private void retrieveRequests(final String scheduleId) {
+
+        pendingrequests = new ArrayList<>();
+        acceptedRequests = new ArrayList<>();
+
+        DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("requests");
+
+
+
+        dbRef.addValueEventListener(new ValueEventListener() {
+
+
+
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                for (DataSnapshot ds : dataSnapshot.getChildren()){
+
+                    ModelRequest modelRequest = ds.getValue(ModelRequest.class);
+
+                    assert modelRequest != null;
+                    if (Objects.requireNonNull(firebaseAuth.getCurrentUser()).getUid().equals(modelRequest.getReceiverId())
+                            && scheduleId.equals(modelRequest.getScheduleId())){
+                        if (modelRequest.isAccepted())
+                        {
+                            acceptedRequests.add(modelRequest);
+                        } else {
+                            pendingrequests.add(modelRequest);
+
+                        }
+
+                    }
+                }
+
+                pendingSize = String.valueOf(pendingrequests.size());
+                accSize = String.valueOf(acceptedRequests.size());
+
+                Log.i("CHECK", String.valueOf(pendingrequests.size()));
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+
+    }
+
+    private void applyForAppt(final String freeDate, final String startTime, final String endTime, final String scheduleId) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
 //            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 //            assert inflater != null;
 //            View theView = inflater.inflate(R.layout.appointment_details_dialog, null);
 
-        View theView = LayoutInflater.from(context).inflate(R.layout.apply_for_apt_dialog, null);
+        @SuppressLint("InflateParams") View theView = LayoutInflater.from(context).inflate(R.layout.apply_for_apt_dialog, null);
 
         builder.setView(theView);
 
@@ -104,7 +177,10 @@ public class AdapterFreeTime extends RecyclerView.Adapter<AdapterFreeTime.FreeTi
 
         aptDetails = theView.findViewById(R.id.aptdetails);
 
-        aptDetails.setText(String.format("%s is free on %s, from %s to %s!", modelTeacher.getName(), freeDate, startTime, endTime));
+        String details = "<b>"+ modelTeacher.getName()+"</b>" + " is free on "+ "<b>"+ freeDate
+                +"</b>"+ ", from "+ "<b>"+ startTime+"</b>"+ " to "+ "<b>"+ endTime+"</b>" ;
+
+        aptDetails.setText(Html.fromHtml(details));
 
         final AlertDialog dialog = builder.create();
         dialog.setCanceledOnTouchOutside(false);
@@ -114,7 +190,7 @@ public class AdapterFreeTime extends RecyclerView.Adapter<AdapterFreeTime.FreeTi
             @SuppressLint("SetTextI18n")
             @Override
             public void onClick(View v) {
-                createRequest(dialog,Objects.requireNonNull(firebaseAuth.getCurrentUser()).getUid(), scheduleId);
+                createRequest(dialog,Objects.requireNonNull(firebaseAuth.getCurrentUser()).getUid(), scheduleId, freeDate, startTime, endTime);
             }
         });
 
@@ -128,7 +204,20 @@ public class AdapterFreeTime extends RecyclerView.Adapter<AdapterFreeTime.FreeTi
 
     }
 
-    private void createRequest(final AlertDialog dialog, String curUid, String scheduleId) {
+    private void createRequest(final AlertDialog dialog, String curUid, String scheduleId, String aptdate, String startTime, String endTime) {
+
+        String requesterName = null, receiverName;
+        if (stRequester!=null){
+            requesterName = stRequester.getFullName();
+
+        }
+
+        if (tRequester!=null){
+            requesterName = tRequester.getName();
+        }
+
+        receiverName = modelTeacher.getName();
+
         dbRef = FirebaseDatabase.getInstance().getReference();
 
         String reqId = dbRef.child("requests").push().getKey();
@@ -139,7 +228,7 @@ public class AdapterFreeTime extends RecyclerView.Adapter<AdapterFreeTime.FreeTi
         String dateTime = formatter.format(date);
 
 
-        ModelRequest modelRequest = new ModelRequest(curUid, modelTeacher.getToken(), dateTime, reqId, scheduleId);
+        ModelRequest modelRequest = new ModelRequest(curUid, modelTeacher.getToken(), dateTime, reqId, scheduleId, requesterName, receiverName, aptdate, startTime, endTime, false);
 
         assert reqId != null;
         dbRef.child("requests").child(reqId).setValue(modelRequest)
@@ -159,7 +248,7 @@ public class AdapterFreeTime extends RecyclerView.Adapter<AdapterFreeTime.FreeTi
     }
 
     @SuppressLint("SetTextI18n")
-    private void seeApointmentDeatails(String freeDate, String startTime, String endTime, String maxNo) {
+    private void seeApointmentDeatails(String freeDate, String startTime, String endTime, String maxNo, String pendSize, String accSize) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
 //            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 //            assert inflater != null;
@@ -175,6 +264,12 @@ public class AdapterFreeTime extends RecyclerView.Adapter<AdapterFreeTime.FreeTi
         dateTv = theView.findViewById(R.id.apDateValue);
         freeTimeTv = theView.findViewById(R.id.apTimeRangeValue);
         maxNoTv = theView.findViewById(R.id.maxApplyValue);
+
+        reqApplyValue = theView.findViewById(R.id.reqApplyValue);
+        accApplyValue = theView.findViewById(R.id.accApplyValue);
+
+        reqApplyValue.setText(pendSize);
+        accApplyValue.setText(accSize);
 
         dateTv.setText(freeDate);
         freeTimeTv.setText(startTime + " \nto " + endTime);

@@ -3,6 +3,7 @@ package com.example.notification.adapters;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,16 +33,19 @@ public class AdapterStudentList extends RecyclerView.Adapter<AdapterStudentList.
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.view_student,viewGroup,false);
-        ViewHolder viewHolder = new ViewHolder(v);
-        return viewHolder;
+        return new ViewHolder(v);
     }
 
     @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
+
+        String depnt = "<b>"+"Department: "+"</b>"+ studentList.get(i).getRegNo();
+        String reg = "<b>"+"Reg No: "+"</b>"+ studentList.get(i).getDepartment();
+
         viewHolder.fullName.setText(studentList.get(i).getFullName());
-        viewHolder.regNo.setText("Reg No: "+ studentList.get(i).getRegNo());
-        viewHolder.dept.setText("Department: "+ studentList.get(i).getDepartment());
+        viewHolder.regNo.setText(Html.fromHtml(reg));
+        viewHolder.dept.setText(Html.fromHtml(depnt));
 
         String img = studentList.get(i).getImageLink();
 

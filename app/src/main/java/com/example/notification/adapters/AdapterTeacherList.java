@@ -23,11 +23,15 @@ import java.util.List;
 
 public class AdapterTeacherList extends RecyclerView.Adapter<AdapterTeacherList.ViewHolder> {
     private List<ModelTeacher> teacherList;
+    private  ModelTeacher modelTeacher;
+    private ModelStudent modelStudent;
     public Context context;
 
-    public AdapterTeacherList(List<ModelTeacher> teacherList, Context context) {
+    public AdapterTeacherList(List<ModelTeacher> teacherList, Context context, ModelTeacher modelTeacher, ModelStudent modelStudent) {
         this.teacherList = teacherList;
         this.context = context;
+        this.modelTeacher = modelTeacher;
+        this.modelStudent = modelStudent;
     }
 
     @NonNull
@@ -70,8 +74,10 @@ public class AdapterTeacherList extends RecyclerView.Adapter<AdapterTeacherList.
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    ModelTeacher modelTeacher = teacherList.get(getAdapterPosition());
+                    ModelTeacher teacher = teacherList.get(getAdapterPosition());
                     Intent intent = new Intent(context, TeacherDetailsActivity.class);
+                    intent.putExtra("teacher", teacher);
+                    intent.putExtra("modelStudent", modelStudent);
                     intent.putExtra("modelTeacher", modelTeacher);
                     context.startActivity(intent);
 

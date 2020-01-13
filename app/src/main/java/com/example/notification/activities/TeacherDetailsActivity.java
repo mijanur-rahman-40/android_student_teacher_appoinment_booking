@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.ActivityOptions;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Html;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -19,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.notification.R;
 import com.example.notification.adapters.AdapterFreeTime;
 import com.example.notification.models.ModelFreeTime;
+import com.example.notification.models.ModelStudent;
 import com.example.notification.models.ModelTeacher;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -36,7 +38,8 @@ public class TeacherDetailsActivity extends AppCompatActivity {
     TextView name, dept, designation,email;
     Button sendBtn;
     ImageView backBtn, tDImg;
-    ModelTeacher modelTeacher;
+    ModelTeacher modelTeacher, tRequester;
+    ModelStudent stRequester;
     AdapterFreeTime adapterFreeTime;
     DatabaseReference dbRef;
     RecyclerView freeTimeRv;
@@ -55,12 +58,16 @@ public class TeacherDetailsActivity extends AppCompatActivity {
 
         setUpViews();
 
-        modelTeacher =  (ModelTeacher) getIntent().getSerializableExtra("modelTeacher");
+        modelTeacher =  (ModelTeacher) getIntent().getSerializableExtra("teacher");
+        tRequester =  (ModelTeacher) getIntent().getSerializableExtra("modelTeacher");
+        stRequester =  (ModelStudent) getIntent().getSerializableExtra("modelStudent");
 
         if (modelTeacher != null) {
             setToTheViews(modelTeacher);
             retrieveAppointmentList();
         }
+
+
 
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -94,7 +101,7 @@ public class TeacherDetailsActivity extends AppCompatActivity {
                         freeTimeList.add(modelFreeTime);
                     }
                 }
-                adapterFreeTime = new AdapterFreeTime(freeTimeList, TeacherDetailsActivity.this, modelTeacher);
+                adapterFreeTime = new AdapterFreeTime(freeTimeList, TeacherDetailsActivity.this, modelTeacher, stRequester, tRequester);
 
                 LinearLayoutManager linearLayout = new LinearLayoutManager(TeacherDetailsActivity.this);
 
@@ -136,10 +143,16 @@ public class TeacherDetailsActivity extends AppCompatActivity {
 
     @SuppressLint("SetTextI18n")
     private void setToTheViews(ModelTeacher modelTeacher) {
+        String depnt = "<b>"+"Department: "+"</b>"+ modelTeacher.getDept();
+        String eml = "<b>"+"Email: "+"</b>"+ modelTeacher.getEmail();
+        String desig = "<b>"+"Designation: "+"</b>"+ modelTeacher.getDesignation();
+
         name.setText(modelTeacher.getName());
-        dept.setText("Department: " + modelTeacher.getDept());
-        email.setText("Email: " + modelTeacher.getEmail());
-        designation.setText("Designation: " + modelTeacher.getDesignation());try {
+        dept.setText(Html.fromHtml(depnt));
+        email.setText(Html.fromHtml(eml));
+        designation.setText(Html.fromHtml(desig));
+
+        try {
             Picasso.get().load(modelTeacher.getImageLink()).into(tDImg);
         } catch (Exception e){
             Picasso.get().load(R.drawable.avatar).into(tDImg);

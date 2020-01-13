@@ -5,12 +5,17 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.annotation.SuppressLint;
 import android.app.ActivityOptions;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.text.Html;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.notification.models.ModelStudent;
@@ -25,6 +30,12 @@ public class StudentDetailsActivity extends AppCompatActivity {
     ImageView backBtn, stDImg;
     ModelStudent modelStudent;
     FirebaseAuth firebaseAuth;
+
+
+    private Animation animation;
+    private LinearLayout stDetailsLv;
+    private TextView stDetailsTv;
+    boolean clicked = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,22 +90,55 @@ public class StudentDetailsActivity extends AppCompatActivity {
         backBtn = findViewById(R.id.back_btn);
         stDImg = findViewById(R.id.std_img);
         firebaseAuth = FirebaseAuth.getInstance();
+        stDetailsLv= findViewById(R.id.stDetailsLayout);
+        stDetailsTv = findViewById(R.id.stDetails);
+
     }
 
 
     @SuppressLint("SetTextI18n")
     private void setToTheViews(ModelStudent modelStudent) {
+
+
+        String depnt = "<b>"+"Department: "+"</b>"+ modelStudent.getDepartment();
+        String eml = "<b>"+"Email: "+"</b>"+ modelStudent.getEmail();
+        String ses = "<b>"+"Session: "+"</b>"+ modelStudent.getSession();
+        String sem = "<b>"+"Semester: "+"</b>"+ modelStudent.getSemester();
+        String reg = "<b>"+"Reg No: "+"</b>"+ modelStudent.getRegNo();
+
         name.setText(modelStudent.getFullName());
-        dept.setText("Department: " + modelStudent.getDepartment());
-        session.setText("Session: " + modelStudent.getSession());
-        semester.setText("Semester: " + modelStudent.getSemester());
-        regNo.setText("Reg No: " + modelStudent.getRegNo());
-        email.setText("Email: " + modelStudent.getEmail());
+        dept.setText(Html.fromHtml(depnt));
+        session.setText(Html.fromHtml(ses));
+        semester.setText(Html.fromHtml(sem));
+        regNo.setText(Html.fromHtml(reg));
+        email.setText(Html.fromHtml(eml));
         try {
             Picasso.get().load(modelStudent.getImageLink()).into(stDImg);
         } catch (Exception e){
             Picasso.get().load(R.drawable.avatar).into(stDImg);
         }
+
+        stDetailsTv.setOnClickListener(new View.OnClickListener() {
+
+            Drawable hide = getResources().getDrawable(R.drawable.eye_off);
+            Drawable show = getResources().getDrawable(R.drawable.eye);
+
+
+            @Override
+            public void onClick(View v) {
+                clicked = !clicked;
+                if (clicked){
+                    stDetailsLv.setVisibility(View.GONE);
+                    stDetailsTv.setCompoundDrawablesWithIntrinsicBounds( null, null, show, null);
+
+                } else {
+                    animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.uptodown);
+                    stDetailsLv.setAnimation(animation);
+                    stDetailsLv.setVisibility(View.VISIBLE);
+                    stDetailsTv.setCompoundDrawablesWithIntrinsicBounds( null, null, hide, null);
+                }
+            }
+        });
     }
 
     @Override

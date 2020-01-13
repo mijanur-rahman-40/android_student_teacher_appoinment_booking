@@ -4,30 +4,36 @@ import java.io.Serializable;
 
 public class ModelRequest implements Serializable {
     private String senderId;
-    private String recieverId;
+    private String receiverId;
     private String sendDateTime;
     private String requestId;
     private String scheduleId;
+    private String requesterName;
+    private String receiverName;
+    private String aptdate;
+    private String startTime;
+    private String endTime;
+    private boolean isAccepted;
 
     public ModelRequest(){
 
     }
 
-    public ModelRequest(String senderId, String recieverId, String sendDateTime, String requestId, String scheduleId) {
+    public ModelRequest(String senderId, String receiverId, String sendDateTime, String requestId,
+                        String scheduleId, String requesterName, String receiverName, String aptdate, String startTime, String endTime, boolean isAccepted) {
         this.senderId = senderId;
-        this.recieverId = recieverId;
+        this.receiverId = receiverId;
         this.sendDateTime = sendDateTime;
         this.requestId = requestId;
         this.scheduleId = scheduleId;
+        this.requesterName = requesterName;
+        this.receiverName = receiverName;
+        this.aptdate = aptdate;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.isAccepted = isAccepted;
     }
 
-    public String getSendDateTime() {
-        return sendDateTime;
-    }
-
-    public void setSendDateTime(String sendDateTime) {
-        this.sendDateTime = sendDateTime;
-    }
 
     public String getSenderId() {
         return senderId;
@@ -37,12 +43,20 @@ public class ModelRequest implements Serializable {
         this.senderId = senderId;
     }
 
-    public String getRecieverId() {
-        return recieverId;
+    public String getReceiverId() {
+        return receiverId;
     }
 
-    public void setRecieverId(String recieverId) {
-        this.recieverId = recieverId;
+    public void setReceiverId(String receiverId) {
+        this.receiverId = receiverId;
+    }
+
+    public String getSendDateTime() {
+        return sendDateTime;
+    }
+
+    public void setSendDateTime(String sendDateTime) {
+        this.sendDateTime = sendDateTime;
     }
 
     public String getRequestId() {
@@ -59,5 +73,54 @@ public class ModelRequest implements Serializable {
 
     public void setScheduleId(String scheduleId) {
         this.scheduleId = scheduleId;
+    }
+
+    public String getRequesterName() {
+        return requesterName;
+    }
+
+    public void setRequesterName(String requesterName) {
+        this.requesterName = requesterName;
+    }
+
+    public String getReceiverName() {
+        return receiverName;
+    }
+
+    public void setReceiverName(String receiverName) {
+        this.receiverName = receiverName;
+    }
+
+    public String getAptdate() {
+        return aptdate;
+    }
+
+    public void setAptdate(String aptdate) {
+        this.aptdate = aptdate;
+    }
+
+    public String getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(String startTime) {
+        this.startTime = startTime;
+    }
+
+    public String getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(String endTime) {
+        this.endTime = endTime;
+    }
+
+
+    public boolean isAccepted() {
+        return isAccepted;
+    }
+
+    public void setAccepted(boolean accepted) {
+        isAccepted = accepted;
     }
 }

@@ -5,9 +5,23 @@
     android:layout_height="match_parent"
     tools:context=".fragments.TeacherRequestedScheduleFragment">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/teacherRequestRv"
+    <androidx.cardview.widget.CardView
+        android:id="@+id/showFreeTimeCard"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/teacherRequestRv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/colorBlueT"/>
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
 
 </FrameLayout>
