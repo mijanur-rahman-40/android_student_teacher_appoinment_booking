@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 public class ModelTeacher implements Serializable {
     private String fullName;
-    private String dept;
+    private String department;
     private String designation;
     private String email;
     private String token;
@@ -16,9 +16,9 @@ public class ModelTeacher implements Serializable {
 
     }
 
-    public ModelTeacher(String fullName, String dept, String designation, String email, String token, String userType, String imageLink) {
+    public ModelTeacher(String fullName, String department, String designation, String email, String token, String userType, String imageLink) {
         this.fullName = fullName;
-        this.dept = dept;
+        this.department = department;
         this.designation = designation;
         this.email = email;
         this.token = token;
@@ -26,20 +26,20 @@ public class ModelTeacher implements Serializable {
         this.imageLink = imageLink;
     }
 
-    public String getName() {
+    public String getFullName() {
         return fullName;
     }
 
-    public void setName(String fullName) {
+    public void setFullName(String fullName) {
         this.fullName = fullName;
     }
 
-    public String getDept() {
-        return dept;
+    public String getDepartment() {
+        return department;
     }
 
-    public void setDept(String dept) {
-        this.dept = dept;
+    public void setDepartment(String department) {
+        this.department = department;
     }
 
     public String getDesignation() {

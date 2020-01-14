@@ -5,7 +5,6 @@ import android.app.ActivityOptions;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -64,9 +63,6 @@ public class ChatActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-
 
         setContentView(R.layout.activity_chat);
 
@@ -94,7 +90,7 @@ public class ChatActivity extends AppCompatActivity {
                 Picasso.get().load(R.drawable.avatar).into(hisImg);
             }
         } else if (modelTeacher != null) {
-            userName.setText(modelTeacher.getName());
+            userName.setText(modelTeacher.getFullName());
             hisUid = modelTeacher.getToken();
             hisImage = modelTeacher.getImageLink();
             try {

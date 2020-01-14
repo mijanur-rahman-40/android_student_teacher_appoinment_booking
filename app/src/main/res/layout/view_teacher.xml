@@ -53,7 +53,7 @@
                 android:textColor="#707070"/>
 
             <TextView
-                android:id="@+id/dept"
+                android:id="@+id/department"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"

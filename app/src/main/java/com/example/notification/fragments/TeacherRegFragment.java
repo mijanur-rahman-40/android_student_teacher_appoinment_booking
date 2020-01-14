@@ -147,9 +147,9 @@ public class TeacherRegFragment extends Fragment {
 
     }
 
-    private void writeUser(String fullName, String dept, String designation, String email, String token) {
+    private void writeUser(String fullName, String department, String designation, String email, String token) {
 
-        ModelTeacher modelTeacher = new ModelTeacher(fullName,dept,designation,email,token,USER_TYPE, "");
+        ModelTeacher modelTeacher = new ModelTeacher(fullName,department,designation,email,token,USER_TYPE, "");
         databaseUser.child(token).setValue(modelTeacher)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override

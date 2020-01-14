@@ -24,6 +24,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -85,7 +86,10 @@ public class MessageFragment extends Fragment {
         final FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("users");
-        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+
+        Query query = databaseReference.orderByChild("fullName");
+
+        query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
@@ -93,6 +97,10 @@ public class MessageFragment extends Fragment {
                 sprogressBar.setVisibility(View.GONE);
 
                 if (dataSnapshot.exists()) {
+
+                    modelStudentList.clear();
+                    modelTeacherList.clear();
+
                     for (DataSnapshot dsUser : dataSnapshot.getChildren()) {
 
                         if (Objects.requireNonNull(dsUser.child("userType").getValue()).toString().equals("teacher")){

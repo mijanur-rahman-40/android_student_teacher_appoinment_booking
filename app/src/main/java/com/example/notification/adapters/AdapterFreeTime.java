@@ -14,7 +14,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.notification.R;
@@ -181,7 +180,7 @@ public class AdapterFreeTime extends RecyclerView.Adapter<AdapterFreeTime.FreeTi
 
         aptDetails = theView.findViewById(R.id.aptdetails);
 
-        String details = "<b>"+ modelTeacher.getName()+"</b>" + " is free on "+ "<b>"+ freeDate
+        String details = "<b>"+ modelTeacher.getFullName()+"</b>" + " is free on "+ "<b>"+ freeDate
                 +"</b>"+ ", from "+ "<b>"+ startTime+"</b>"+ " to "+ "<b>"+ endTime+"</b>" ;
 
         aptDetails.setText(Html.fromHtml(details));
@@ -217,10 +216,10 @@ public class AdapterFreeTime extends RecyclerView.Adapter<AdapterFreeTime.FreeTi
         }
 
         if (tRequester!=null){
-            requesterName = tRequester.getName();
+            requesterName = tRequester.getFullName();
         }
 
-        receiverName = modelTeacher.getName();
+        receiverName = modelTeacher.getFullName();
 
         dbRef = FirebaseDatabase.getInstance().getReference();
 

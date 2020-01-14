@@ -27,6 +27,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
@@ -50,8 +51,8 @@ public class TeacherDetailsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+//        requestWindowFeature(Window.FEATURE_NO_TITLE);
+//        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         setContentView(R.layout.activity_teacher_details);
 
@@ -87,9 +88,11 @@ public class TeacherDetailsActivity extends AppCompatActivity {
     private void retrieveAppointmentList() {
         freeTimeList = new ArrayList<>();
 
-        dbRef = FirebaseDatabase.getInstance().getReference();
+        dbRef = FirebaseDatabase.getInstance().getReference("freeTimes");
 
-        dbRef.child("freeTimes").addValueEventListener(new ValueEventListener() {
+        Query query = dbRef.orderByChild("freeDate");
+
+        query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 freeTimeList.clear();
@@ -143,11 +146,11 @@ public class TeacherDetailsActivity extends AppCompatActivity {
 
     @SuppressLint("SetTextI18n")
     private void setToTheViews(ModelTeacher modelTeacher) {
-        String depnt = "<b>"+"Department: "+"</b>"+ modelTeacher.getDept();
+        String depnt = "<b>"+"Department: "+"</b>"+ modelTeacher.getDepartment();
         String eml = "<b>"+"Email: "+"</b>"+ modelTeacher.getEmail();
         String desig = "<b>"+"Designation: "+"</b>"+ modelTeacher.getDesignation();
 
-        name.setText(modelTeacher.getName());
+        name.setText(modelTeacher.getFullName());
         dept.setText(Html.fromHtml(depnt));
         email.setText(Html.fromHtml(eml));
         designation.setText(Html.fromHtml(desig));

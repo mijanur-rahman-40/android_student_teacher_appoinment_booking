@@ -16,7 +16,7 @@
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning">
         <activity android:name=".activities.ChatActivity"
-            android:windowSoftInputMode="adjustResize"/>
+            android:windowSoftInputMode="adjustResize|stateHidden"/>
         <activity android:name=".activities.TeacherDetailsActivity" />
         <activity android:name=".activities.StudentDetailsActivity" />
         <activity
@@ -25,8 +25,7 @@
         <activity android:name=".activities.SendNotificationActivity" />
         <activity android:name=".activities.ProfileActivity"/>
         <activity
-            android:name=".activities.MainActivity"
-            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar" />
+            android:name=".activities.MainActivity"/>
         <activity
             android:name=".activities.LoginActivity"
             android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"

@@ -1,12 +1,10 @@
 package com.example.notification.activities;
 
-import android.app.ActivityOptions;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
@@ -17,14 +15,13 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
 
-import com.example.notification.fragments.MessageFragment;
-import com.example.notification.fragments.NotificationFragment;
 import com.example.notification.R;
 import com.example.notification.adapters.AdapterViewPager;
+import com.example.notification.fragments.MessageFragment;
+import com.example.notification.fragments.NotificationFragment;
 import com.example.notification.models.ModelStudent;
 import com.example.notification.models.ModelTeacher;
 import com.google.android.material.tabs.TabLayout;
-import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -57,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
+//        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
 
         setupViews();
@@ -127,7 +124,7 @@ public class MainActivity extends AppCompatActivity {
                                 if (userType.equals("teacher")){
                                     modelTeacher = dsUser.getValue(ModelTeacher.class);
                                     assert modelTeacher != null;
-                                    name = modelTeacher.getName();
+                                    name = modelTeacher.getFullName();
                                     imageLink = modelTeacher.getImageLink();
                                     userType = modelTeacher.getUserType();
                                 } else if(userType.equals("student")){
@@ -199,10 +196,7 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
 
         if (firebaseAuth.getCurrentUser() == null) {
-            Intent intent = new Intent(this, LoginActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            ActivityOptions activityOptions = ActivityOptions.makeSceneTransitionAnimation(MainActivity.this);
-            startActivity(intent, activityOptions.toBundle());
+            logOut();
         }
 
     }

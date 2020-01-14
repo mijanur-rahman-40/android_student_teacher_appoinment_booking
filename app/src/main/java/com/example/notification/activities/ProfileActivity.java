@@ -82,8 +82,8 @@ public class ProfileActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+//        requestWindowFeature(Window.FEATURE_NO_TITLE);
+//        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
 
         cameraPermissions = new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
@@ -233,12 +233,12 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
 
-        String depnt = "<b>"+"Department: "+"</b>"+ modelTeacher.getDept();
+        String depnt = "<b>"+"Department: "+"</b>"+ modelTeacher.getDepartment();
         String eml = "<b>"+"Email: "+"</b>"+ modelTeacher.getEmail();
         String desig = "<b>"+"Designation: "+"</b>"+ modelTeacher.getDesignation();
 
 
-        tName.setText(modelTeacher.getName());
+        tName.setText(modelTeacher.getFullName());
         department.setText(Html.fromHtml(depnt));
         designation.setText(Html.fromHtml(desig));
         email.setText(Html.fromHtml(eml));

@@ -13,7 +13,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.notification.R;
-import com.example.notification.activities.StudentDetailsActivity;
 import com.example.notification.activities.TeacherDetailsActivity;
 import com.example.notification.models.ModelStudent;
 import com.example.notification.models.ModelTeacher;
@@ -45,8 +44,8 @@ public class AdapterTeacherList extends RecyclerView.Adapter<AdapterTeacherList.
     @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
-        viewHolder.tName.setText(teacherList.get(i).getName());
-        viewHolder.dept.setText(teacherList.get(i).getDept());
+        viewHolder.tName.setText(teacherList.get(i).getFullName());
+        viewHolder.dept.setText(teacherList.get(i).getDepartment());
         try {
             Picasso.get().load(teacherList.get(i).getImageLink()).into(viewHolder.tImg);
         } catch (Exception e){
@@ -67,7 +66,7 @@ public class AdapterTeacherList extends RecyclerView.Adapter<AdapterTeacherList.
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             tName    = itemView.findViewById(R.id.teacherName);
-            dept       = itemView.findViewById(R.id.dept);
+            dept       = itemView.findViewById(R.id.department);
             noOfReq = itemView.findViewById(R.id.noOfApnt);
             tImg = itemView.findViewById(R.id.t_avatar);
 
