@@ -48,7 +48,10 @@ public class AdapterRequestList extends RecyclerView.Adapter<AdapterRequestList.
         String sender = modelRequests.get(i).getSenderId().equals(Objects.requireNonNull(firebaseAuth.getCurrentUser()).getUid())?
                 "You ": modelRequests.get(i).getRequesterName();
 
-        String reqTo = "<b>"+ sender+"</b>" + " requested for an appointment to "+ "<b>"+ modelRequests.get(i).getReceiverName()+"</b>";
+        String receiver = modelRequests.get(i).getReceiverId().equals(Objects.requireNonNull(firebaseAuth.getCurrentUser()).getUid())?
+                "You ": modelRequests.get(i).getReceiverName();
+
+        String reqTo = "<b>"+ sender+"</b>" + " requested for an appointment to "+ "<b>"+ receiver+"</b>";
         String dateTime = "<b>"+ modelRequests.get(i).getAptdate()+"</b>" + " between "+ "<b>"+ modelRequests.get(i).getStartTime()
                 +"</b>" + " and "+ "<b>"+ modelRequests.get(i).getEndTime()+"</b>";
 

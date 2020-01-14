@@ -2,6 +2,8 @@ package com.example.notification.adapters;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
+import android.os.Parcelable;
 import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,6 +19,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.notification.R;
+import com.example.notification.activities.PendingRequestActivity;
 import com.example.notification.models.ModelFreeTime;
 import com.example.notification.models.ModelRequest;
 import com.example.notification.models.ModelStudent;
@@ -31,6 +34,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -193,6 +197,9 @@ public class AdapterFreeTime extends RecyclerView.Adapter<AdapterFreeTime.FreeTi
             @SuppressLint("SetTextI18n")
             @Override
             public void onClick(View v) {
+
+                DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+
                 createRequest(dialog,Objects.requireNonNull(firebaseAuth.getCurrentUser()).getUid(), scheduleId, freeDate, startTime, endTime);
             }
         });
@@ -271,7 +278,24 @@ public class AdapterFreeTime extends RecyclerView.Adapter<AdapterFreeTime.FreeTi
         reqApplyValue = theView.findViewById(R.id.reqApplyValue);
         accApplyValue = theView.findViewById(R.id.accApplyValue);
 
+
+
         retrieveRequests(scheduleId, reqApplyValue, accApplyValue);
+
+
+        reqApplyValue.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                seeRequestList();
+            }
+        });
+        accApplyValue.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                seeAcceptedList();
+            }
+        });
+
 
 
         dateTv.setText(freeDate);
@@ -296,6 +320,24 @@ public class AdapterFreeTime extends RecyclerView.Adapter<AdapterFreeTime.FreeTi
                 dialog.dismiss();
             }
         });
+
+    }
+
+    private void seeAcceptedList() {
+        Intent intent = new Intent(context, PendingRequestActivity.class);
+
+        intent.putParcelableArrayListExtra("requestList", (ArrayList) acceptedRequests);
+
+        context.startActivity(intent);
+    }
+
+    private void seeRequestList() {
+
+        Intent intent = new Intent(context, PendingRequestActivity.class);
+
+        intent.putParcelableArrayListExtra("requestList", (ArrayList) pendingrequests);
+
+        context.startActivity(intent);
 
     }
 

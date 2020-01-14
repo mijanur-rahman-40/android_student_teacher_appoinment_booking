@@ -1,8 +1,11 @@
 package com.example.notification.models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.io.Serializable;
 
-public class ModelRequest implements Serializable {
+public class ModelRequest implements Parcelable {
     private String senderId;
     private String receiverId;
     private String sendDateTime;
@@ -122,5 +125,51 @@ public class ModelRequest implements Serializable {
 
     public void setAccepted(boolean accepted) {
         isAccepted = accepted;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(senderId);
+        dest.writeString(receiverId);
+        dest.writeString(sendDateTime);
+        dest.writeString(requestId);
+        dest.writeString(scheduleId);
+        dest.writeString(requesterName);
+        dest.writeString(receiverName);
+        dest.writeString(aptdate);
+        dest.writeString(startTime);
+        dest.writeString(endTime);
+        dest.writeBoolean(isAccepted);
+
+    }
+
+    public static final Parcelable.Creator CREATOR = new Parcelable.Creator(){
+        @Override
+        public ModelRequest createFromParcel(Parcel source) {
+            return new ModelRequest(source);
+        }
+
+        public ModelRequest[] newArray(int size){
+            return new ModelRequest[size];
+        }
+    };
+
+    public ModelRequest(Parcel parcel){
+        senderId = parcel.readString();
+        receiverId = parcel.readString();
+        sendDateTime = parcel.readString();
+        requestId = parcel.readString();
+        scheduleId = parcel.readString();
+        requesterName = parcel.readString();
+        receiverName = parcel.readString();
+        aptdate = parcel.readString();
+        startTime = parcel.readString();
+        endTime = parcel.readString();
+        isAccepted = parcel.readBoolean();
     }
 }

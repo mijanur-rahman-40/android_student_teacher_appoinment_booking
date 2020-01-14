@@ -2,9 +2,11 @@ package com.example.notification.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
@@ -36,7 +38,6 @@ import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
 
-    int count = 0;
     TabLayout tabMenu;
     ViewPager viewPager;
     private FirebaseAuth firebaseAuth;
@@ -46,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
     LinearLayout namePhoto;
     ModelTeacher modelTeacher;
     ModelStudent modelStudent;
+    boolean isDoubleClicked = false;
 
 
 
@@ -54,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-//        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
 
         setupViews();
@@ -109,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void checkUserStatus() {
 
-        final FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("users");
 
@@ -137,8 +139,12 @@ public class MainActivity extends AppCompatActivity {
 
                                 tvMyName.setText(name);
                                 try {
-                                    Picasso.get().load(imageLink).into(myImg);
-                                    Log.i("ImgUri", imageLink);
+                                    if (imageLink.length() == 0){
+                                        myImg.setImageResource(R.drawable.avatar);
+                                    } else {
+                                        Picasso.get().load(imageLink).into(myImg);
+                                        Log.i("ImgUri", imageLink);
+                                    }
                                 } catch (Exception e){
                                     Picasso.get().load(R.drawable.avatar).into(myImg);
                                 }
@@ -159,8 +165,6 @@ public class MainActivity extends AppCompatActivity {
 
                 }
             });
-        } else {
-
         }
     }
 
@@ -179,7 +183,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void goProfileActivity(){
-        count = 0;
         Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
 
         if (userType.equals("student")){
@@ -203,12 +206,20 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        count++;
-        if (count == 2){
-            count = 0;
+        if (isDoubleClicked){
+            super.onBackPressed();
             finishAffinity();
-        } else {
-            Toast.makeText(this, "Press again to exit.", Toast.LENGTH_SHORT).show();
         }
+
+        this.isDoubleClicked = true;
+
+        Toast.makeText(this, "Press back again to exit.", Toast.LENGTH_SHORT).show();
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                isDoubleClicked = false;
+            }
+        }, 2000);
     }
 }

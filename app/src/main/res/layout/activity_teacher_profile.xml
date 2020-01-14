@@ -12,8 +12,8 @@
         android:layout_width="match_parent"
         android:layout_height="130dp"
         android:background="@drawable/header_register"
-        android:theme="@style/ToolbarTheme"
-        android:elevation="5dp" />
+        android:elevation="5dp"
+        android:theme="@style/ToolbarTheme" />
 
     <ImageView
         android:id="@+id/back_btn"
@@ -57,7 +57,7 @@
         android:layout_height="182dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginLeft="-80dp"
+        android:layout_marginStart="-80dp"
         android:layout_marginBottom="-30dp"
         android:src="@drawable/circle" />
 
@@ -82,7 +82,7 @@
                 android:layout_width="110dp"
                 android:layout_height="110dp"
                 android:scaleType="centerCrop"
-                android:src="@drawable/ic_upload" />
+                android:src="@drawable/avatar" />
         </RelativeLayout>
     </androidx.cardview.widget.CardView>
 
@@ -115,6 +115,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Profile Details"
+                        android:padding="5dp"
                     android:textSize="18sp"
                     android:textStyle="bold"
                     android:textColor="@color/colorBlue"
@@ -125,6 +126,7 @@
                         android:id="@+id/tProLv"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:padding="5dp"
                         android:orientation="vertical"
                         android:visibility="gone">
 

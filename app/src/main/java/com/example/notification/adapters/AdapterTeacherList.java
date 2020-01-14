@@ -3,6 +3,7 @@ package com.example.notification.adapters;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,7 +48,13 @@ public class AdapterTeacherList extends RecyclerView.Adapter<AdapterTeacherList.
         viewHolder.tName.setText(teacherList.get(i).getFullName());
         viewHolder.dept.setText(teacherList.get(i).getDepartment());
         try {
-            Picasso.get().load(teacherList.get(i).getImageLink()).into(viewHolder.tImg);
+
+            if (teacherList.get(i).getImageLink().length() == 0){
+                viewHolder.tImg.setImageResource(R.drawable.avatar);
+            } else {
+                Picasso.get().load(teacherList.get(i).getImageLink()).into(viewHolder.tImg);
+            }
+
         } catch (Exception e){
             Picasso.get().load(R.drawable.avatar).into(viewHolder.tImg);
         }

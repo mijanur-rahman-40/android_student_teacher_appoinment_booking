@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.text.Html;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,7 +51,13 @@ public class AdapterStudentList extends RecyclerView.Adapter<AdapterStudentList.
         String img = studentList.get(i).getImageLink();
 
         try {
-            Picasso.get().load(img).into(viewHolder.stImg);
+
+            if (img.length() == 0){
+                viewHolder.stImg.setImageResource(R.drawable.avatar);
+            } else {
+                Picasso.get().load(img).into(viewHolder.stImg);
+            }
+
         } catch (Exception e){
             Picasso.get().load(R.drawable.avatar).into(viewHolder.stImg);
         }

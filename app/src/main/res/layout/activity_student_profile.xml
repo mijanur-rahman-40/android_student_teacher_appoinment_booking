@@ -102,13 +102,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="10dp"
+                android:padding="5dp"
                 android:gravity="start">
                 <TextView
                     android:id="@+id/proDetails"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Profile Details"
+                    android:padding="5dp"
                     android:textSize="18sp"
                     android:textStyle="bold"
                     android:textColor="@color/colorBlue"
@@ -126,10 +127,11 @@
 
                     <TextView
                         android:id="@+id/stPDept"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textColor="@android:color/black"
                         android:visibility="visible"
+                        android:padding="5dp"
                         android:text="Department"/>
                     <EditText
                         android:id="@+id/edit_dept"
@@ -139,7 +141,7 @@
 
                     <TextView
                         android:id="@+id/stPReg"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textColor="@android:color/black"
                         android:padding="5dp"
@@ -152,7 +154,7 @@
 
                     <TextView
                         android:id="@+id/stPSem"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textColor="@android:color/black"
                         android:padding="5dp"
@@ -166,7 +168,7 @@
 
                     <TextView
                         android:id="@+id/stPSes"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textColor="@android:color/black"
                         android:padding="5dp"
@@ -179,11 +181,17 @@
                         android:visibility="gone"/>
                     <TextView
                         android:id="@+id/stPEmail"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textColor="@android:color/black"
                         android:padding="5dp"
                         android:text="Email"/>
+
+                    <EditText
+                        android:id="@+id/edit_mail"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone"/>
 
 
                 </LinearLayout>

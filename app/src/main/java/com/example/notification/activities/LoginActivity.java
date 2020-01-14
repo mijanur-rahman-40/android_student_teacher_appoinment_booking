@@ -6,6 +6,7 @@ import android.app.NotificationManager;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Pair;
 import android.view.View;
 import android.view.Window;
@@ -53,7 +54,10 @@ public class LoginActivity extends AppCompatActivity {
     private Animation animation;
     private RelativeLayout logLayout;
 
+    boolean isdoubleClicked = false;
+
     @Override
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
@@ -155,7 +159,6 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void startMainActivity() {
-        count = 0;
         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
@@ -163,12 +166,21 @@ public class LoginActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        count++;
-        if (count == 2){
-            count = 0;
+        if (isdoubleClicked){
+            super.onBackPressed();
             finishAffinity();
-        } else {
-            Toast.makeText(this, "Press again to exit.", Toast.LENGTH_SHORT).show();
         }
+
+        this.isdoubleClicked = true;
+
+        Toast.makeText(this, "Press back again to exit.", Toast.LENGTH_SHORT).show();
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                isdoubleClicked = false;
+            }
+        }, 2000);
+
     }
 }

@@ -4,8 +4,8 @@
     package="com.example.notification">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.CAMERA"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -15,17 +15,18 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning">
-        <activity android:name=".activities.ChatActivity"
-            android:windowSoftInputMode="adjustResize|stateHidden"/>
+        <activity android:name=".activities.PendingRequestActivity"></activity>
+        <activity
+            android:name=".activities.ChatActivity"
+            android:windowSoftInputMode="adjustResize|stateHidden" />
         <activity android:name=".activities.TeacherDetailsActivity" />
         <activity android:name=".activities.StudentDetailsActivity" />
         <activity
             android:name=".activities.RegisterActivity"
             android:windowSoftInputMode="stateHidden" />
         <activity android:name=".activities.SendNotificationActivity" />
-        <activity android:name=".activities.ProfileActivity"/>
-        <activity
-            android:name=".activities.MainActivity"/>
+        <activity android:name=".activities.ProfileActivity" />
+        <activity android:name=".activities.MainActivity" />
         <activity
             android:name=".activities.LoginActivity"
             android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"

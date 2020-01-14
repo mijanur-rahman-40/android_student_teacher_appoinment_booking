@@ -11,7 +11,8 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="150dp"
-        android:background="@drawable/header_register" />
+        android:background="@drawable/header_register"
+        android:theme="@style/ToolbarTheme"/>
 
     <LinearLayout
         android:id="@+id/namePhoto"
