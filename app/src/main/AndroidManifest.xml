@@ -39,7 +39,7 @@
         </activity>
 
         <service
-            android:name=".MyFirebaseMessagingService"
+            android:name=".notifications.MyFirebaseMessagingService"
             android:permission="TODO"
             tools:ignore="ExportedService">
             <intent-filter>

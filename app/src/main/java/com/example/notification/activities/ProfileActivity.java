@@ -35,20 +35,25 @@ import com.example.notification.fragments.TeacherOwnSceduleFragment;
 import com.example.notification.fragments.TeacherRequestedScheduleFragment;
 import com.example.notification.models.ModelStudent;
 import com.example.notification.models.ModelTeacher;
+import com.example.notification.notifications.Data;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
 import java.util.HashMap;
+import java.util.Objects;
 
 public class ProfileActivity extends AppCompatActivity {
 
@@ -62,7 +67,7 @@ public class ProfileActivity extends AppCompatActivity {
     String[] cameraPermissions;
     String[] storagePermissions;
     Uri image_uri;
-    String storePath = "imageLink";
+    String storePath = "imageLink", userType;
     ModelTeacher modelTeacher;
     ModelStudent modelStudent;
 
@@ -443,6 +448,7 @@ public class ProfileActivity extends AppCompatActivity {
                             .addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void aVoid) {
+                                    showImage();
                                     Toast.makeText(ProfileActivity.this, "Image uploaded", Toast.LENGTH_SHORT).show();
 
                                 }
@@ -462,6 +468,53 @@ public class ProfileActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    private void showImage() {
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+
+        databaseReference.child("users").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot ds : dataSnapshot.getChildren()){
+
+                    if (Objects.requireNonNull(ds.child("token").getValue()).toString().equals(firebaseAuth.getUid())){
+                        userType = Objects.requireNonNull(ds.child("userType").getValue()).toString();
+                        if (userType.equals("teacher")){
+                            ModelTeacher modelTeacher = ds.getValue(ModelTeacher.class);
+
+                            try {
+                                assert modelTeacher != null;
+                                Picasso.get().load(modelTeacher.getImageLink()).into(tpImage);
+
+                            } catch (Exception e){
+                                tpImage.setImageResource(R.drawable.avatar);
+                                e.printStackTrace();
+                            }
+                        } else if (userType.equals("student")){
+                            ModelStudent modelStudent = ds.getValue(ModelStudent.class);
+
+                            try {
+                                assert modelStudent != null;
+                                Picasso.get().load(modelStudent.getImageLink()).into(spImage);
+
+                            } catch (Exception e){
+                                spImage.setImageResource(R.drawable.avatar);
+                                e.printStackTrace();
+                            }
+                        }
+
+                    }
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
     }
 
     @Override

@@ -111,61 +111,74 @@ public class MainActivity extends AppCompatActivity {
 
     private void checkUserStatus() {
 
-        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("users");
+                final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("users");
 
-        if (firebaseUser != null){
-            databaseReference.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    if (dataSnapshot.exists()) {
-                        for (DataSnapshot dsUser : dataSnapshot.getChildren()){
-                            if (Objects.requireNonNull(dsUser.child("token").getValue()).toString().equals(firebaseAuth.getUid())){
-                                userType = Objects.requireNonNull(dsUser.child("userType").getValue()).toString();
-                                if (userType.equals("teacher")){
-                                    modelTeacher = dsUser.getValue(ModelTeacher.class);
-                                    assert modelTeacher != null;
-                                    name = modelTeacher.getFullName();
-                                    imageLink = modelTeacher.getImageLink();
-                                    userType = modelTeacher.getUserType();
-                                } else if(userType.equals("student")){
-                                    modelStudent = dsUser.getValue(ModelStudent.class);
-                                    assert modelStudent != null;
-                                    name = modelStudent.getFullName();
-                                    imageLink = modelStudent.getImageLink();
-                                    userType = modelStudent.getUserType();
-                                }
+                if (firebaseUser != null){
+                   databaseReference.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            if (dataSnapshot.exists()) {
+                                for (DataSnapshot dsUser : dataSnapshot.getChildren()) {
+                                    if (Objects.requireNonNull(dsUser.child("token").getValue()).toString().equals(firebaseAuth.getUid())) {
+                                        userType = Objects.requireNonNull(dsUser.child("userType").getValue()).toString();
+                                        if (userType.equals("teacher")) {
+                                            modelTeacher = dsUser.getValue(ModelTeacher.class);
+                                            assert modelTeacher != null;
+                                            name = modelTeacher.getFullName();
+                                            imageLink = modelTeacher.getImageLink();
+                                            userType = modelTeacher.getUserType();
+                                        } else if (userType.equals("student")) {
+                                            modelStudent = dsUser.getValue(ModelStudent.class);
+                                            assert modelStudent != null;
+                                            name = modelStudent.getFullName();
+                                            imageLink = modelStudent.getImageLink();
+                                            userType = modelStudent.getUserType();
+                                        }
 
-                                tvMyName.setText(name);
-                                try {
-                                    if (imageLink.length() == 0){
-                                        myImg.setImageResource(R.drawable.avatar);
-                                    } else {
-                                        Picasso.get().load(imageLink).into(myImg);
-                                        Log.i("ImgUri", imageLink);
+                                        tvMyName.setText(name);
+                                        try {
+                                            if (imageLink.length() == 0) {
+                                                myImg.setImageResource(R.drawable.avatar);
+                                            } else {
+                                                Picasso.get().load(imageLink).into(myImg);
+
+                                                Log.i("ImgUri", imageLink);
+                                            }
+                                        } catch (Exception e) {
+                                            Picasso.get().load(R.drawable.avatar).into(myImg);
+                                        }
                                     }
-                                } catch (Exception e){
-                                    Picasso.get().load(R.drawable.avatar).into(myImg);
                                 }
                             }
-                        }
-                    }
 
-                    namePhoto.setOnClickListener(new View.OnClickListener() {
+                            namePhoto.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    goProfileActivity();
+                                }
+                            });
+                        }
+
+
                         @Override
-                        public void onClick(View v) {
-                            goProfileActivity();
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
                         }
                     });
                 }
+            }
 
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                }
-            });
-        }
+
+
+        }).start();
+
+
     }
 
     private void setupViewPager(ViewPager viewPager) {

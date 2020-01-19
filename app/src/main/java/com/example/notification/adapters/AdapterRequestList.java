@@ -27,7 +27,7 @@ public class AdapterRequestList extends RecyclerView.Adapter<AdapterRequestList.
     private List<ModelRequest> modelRequests;
     public Context context;
 
-    FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+    private FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
 
     public AdapterRequestList(List<ModelRequest> modelRequests, Context context) {
         this.modelRequests = modelRequests;

@@ -82,68 +82,81 @@ public class MessageFragment extends Fragment {
         rvTeachers.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL,false));
         rvStudents.setLayoutManager(new LinearLayoutManager(getActivity()));
 
+        new Thread(new Runnable(){
 
-        final FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("users");
-
-        Query query = databaseReference.orderByChild("fullName");
-
-        query.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+            public void run() {
 
-                tprogressBar.setVisibility(View.GONE);
-                sprogressBar.setVisibility(View.GONE);
+                final FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
-                if (dataSnapshot.exists()) {
+                DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("users");
 
-                    modelStudentList.clear();
-                    modelTeacherList.clear();
+                final Query query = databaseReference.orderByChild("fullName");
 
-                    for (DataSnapshot dsUser : dataSnapshot.getChildren()) {
+                query.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                        if (Objects.requireNonNull(dsUser.child("userType").getValue()).toString().equals("teacher")){
-                            ModelTeacher modelTeacher = dsUser.getValue(ModelTeacher.class);
+                        tprogressBar.setVisibility(View.GONE);
+                        sprogressBar.setVisibility(View.GONE);
 
-                            assert modelTeacher != null;
-                            assert firebaseUser != null;
-                            if (modelTeacher.getToken().equals(firebaseUser.getUid())){
-                                modelTrRequester = modelTeacher;
-                            } else {
-                                modelTeacherList.add(modelTeacher);
+                        if (dataSnapshot.exists()) {
+
+                            modelStudentList.clear();
+                            modelTeacherList.clear();
+
+                            for (DataSnapshot dsUser : dataSnapshot.getChildren()) {
+
+                                if (Objects.requireNonNull(dsUser.child("userType").getValue()).toString().equals("teacher")){
+                                    ModelTeacher modelTeacher = dsUser.getValue(ModelTeacher.class);
+
+                                    assert modelTeacher != null;
+                                    assert firebaseUser != null;
+                                    if (modelTeacher.getToken().equals(firebaseUser.getUid())){
+                                        modelTrRequester = modelTeacher;
+                                    } else {
+                                        modelTeacherList.add(modelTeacher);
+                                    }
+
+                                }
+                                if (Objects.requireNonNull(dsUser.child("userType").getValue()).toString().equals("student")){
+                                    ModelStudent modelStudent = dsUser.getValue(ModelStudent.class);
+
+                                    assert modelStudent != null;
+                                    assert firebaseUser != null;
+                                    if (modelStudent.getToken().equals(firebaseUser.getUid())){
+                                        modelStRequester = modelStudent;
+                                    } else {
+                                        modelStudentList.add(modelStudent);
+                                    }
+
+                                }
                             }
 
-                        }
-                        if (Objects.requireNonNull(dsUser.child("userType").getValue()).toString().equals("student")){
-                            ModelStudent modelStudent = dsUser.getValue(ModelStudent.class);
+                            AdapterTeacherList teacherAdapter = new AdapterTeacherList(modelTeacherList, getContext(), modelTrRequester, modelStRequester);
+                            rvTeachers.setAdapter(teacherAdapter);
 
-                            assert modelStudent != null;
-                            assert firebaseUser != null;
-                            if (modelStudent.getToken().equals(firebaseUser.getUid())){
-                                modelStRequester = modelStudent;
-                            } else {
-                                modelStudentList.add(modelStudent);
-                            }
-
+                            AdapterStudentList studentAdapter = new AdapterStudentList(modelStudentList, getContext()) ;
+                            rvStudents.setAdapter(studentAdapter);
+                        } else {
+                            Toast.makeText(getContext(), "No user found", Toast.LENGTH_SHORT).show();
                         }
+
+                        query.removeEventListener(this);
                     }
 
-                    AdapterTeacherList teacherAdapter = new AdapterTeacherList(modelTeacherList, getContext(), modelTrRequester, modelStRequester);
-                    rvTeachers.setAdapter(teacherAdapter);
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                    AdapterStudentList studentAdapter = new AdapterStudentList(modelStudentList, getContext()) ;
-                    rvStudents.setAdapter(studentAdapter);
-                } else {
-                    Toast.makeText(getContext(), "No user found", Toast.LENGTH_SHORT).show();
-                }
+                    }
+                });
             }
+        }).start();
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
 
-            }
-        });
+
     }
+
+
 
 }
