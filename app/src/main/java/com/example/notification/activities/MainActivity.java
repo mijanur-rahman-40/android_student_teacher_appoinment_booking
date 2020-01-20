@@ -1,6 +1,7 @@
 package com.example.notification.activities;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -23,6 +24,7 @@ import com.example.notification.fragments.MessageFragment;
 import com.example.notification.fragments.NotificationFragment;
 import com.example.notification.models.ModelStudent;
 import com.example.notification.models.ModelTeacher;
+import com.example.notification.notifications.Token;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -31,6 +33,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.squareup.picasso.Picasso;
 
 import java.util.Objects;
@@ -61,6 +64,8 @@ public class MainActivity extends AppCompatActivity {
 
         setupViews();
         checkUserStatus();
+
+        updateToken(FirebaseInstanceId.getInstance().getToken());
 
         option.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -95,6 +100,18 @@ public class MainActivity extends AppCompatActivity {
 
         tabMenu.setupWithViewPager(viewPager);
         viewPager.setCurrentItem(1);  // 0 = drink , 1=food
+
+    }
+
+    private void updateToken(String newToken) {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+        DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("tokens");
+
+        Token token = new Token(newToken);
+
+        assert user != null;
+        dbRef.child(user.getUid()).setValue(token);
 
     }
 
@@ -179,6 +196,7 @@ public class MainActivity extends AppCompatActivity {
         }).start();
 
 
+
     }
 
     private void setupViewPager(ViewPager viewPager) {
@@ -214,6 +232,7 @@ public class MainActivity extends AppCompatActivity {
         if (firebaseAuth.getCurrentUser() == null) {
             logOut();
         }
+
 
     }
 

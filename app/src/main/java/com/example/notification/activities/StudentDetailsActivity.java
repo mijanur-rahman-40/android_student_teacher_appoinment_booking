@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.annotation.SuppressLint;
 import android.app.ActivityOptions;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.Html;
@@ -75,6 +76,7 @@ public class StudentDetailsActivity extends AppCompatActivity {
         Intent intent = new Intent(this, ChatActivity.class);
 
         intent.putExtra("modelStudent", modelStudent);
+
         startActivity(intent);
     }
 
@@ -154,4 +156,18 @@ public class StudentDetailsActivity extends AppCompatActivity {
 
     }
 
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+
+        SharedPreferences sp = getSharedPreferences("SP_USER",MODE_PRIVATE);
+
+        SharedPreferences.Editor editor = sp.edit();
+
+        editor.putString("Current_USERID", firebaseAuth.getCurrentUser().getUid());
+
+        editor.apply();
+    }
 }

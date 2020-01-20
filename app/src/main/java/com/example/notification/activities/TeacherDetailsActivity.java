@@ -3,6 +3,7 @@ package com.example.notification.activities;
 import android.annotation.SuppressLint;
 import android.app.ActivityOptions;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Html;
 import android.view.View;
@@ -173,8 +174,19 @@ public class TeacherDetailsActivity extends AppCompatActivity {
             startActivity(intent, activityOptions.toBundle());
         }
 
+
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
 
+        SharedPreferences sp = getSharedPreferences("SP_USER",MODE_PRIVATE);
 
+        SharedPreferences.Editor editor = sp.edit();
+
+        editor.putString("Current_USERID", firebaseAuth.getCurrentUser().getUid());
+
+        editor.apply();
+    }
 }

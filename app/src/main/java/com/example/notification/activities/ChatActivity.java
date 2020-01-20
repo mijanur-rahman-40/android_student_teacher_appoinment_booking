@@ -5,9 +5,8 @@ import android.app.ActivityOptions;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -19,24 +18,38 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.notification.R;
 import com.example.notification.adapters.AdapterMessageList;
 import com.example.notification.models.ModelMessage;
 import com.example.notification.models.ModelStudent;
 import com.example.notification.models.ModelTeacher;
+import com.example.notification.notifications.Data;
+import com.example.notification.notifications.MySingleton;
+import com.example.notification.notifications.Sender;
+import com.example.notification.notifications.Token;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ChatActivity extends AppCompatActivity {
 
@@ -45,10 +58,15 @@ public class ChatActivity extends AppCompatActivity {
     private ImageView backBtn, fileChooser, voiceInput, hisImg;
     private EditText messagInput;
     private ImageButton msgSend;
-    private String myUid, hisUid;
+    private String myUid, hisUid, hisName, hisID;
     private String hisImage;
     private FirebaseAuth firebaseAuth;
     private RecyclerView chatRecyle;
+
+    private boolean notify = false;
+
+    private ModelStudent modelStudent;
+    private ModelTeacher modelTeacher;
 
 
     ValueEventListener seenListener;
@@ -57,6 +75,8 @@ public class ChatActivity extends AppCompatActivity {
     List<ModelMessage> chatList;
 
     AdapterMessageList adapterChat;
+
+
 
 
     @Override
@@ -75,13 +95,14 @@ public class ChatActivity extends AppCompatActivity {
         chatRecyle.setLayoutManager(linearLayoutManager);
 
 
-
         Intent intent = getIntent();
-        ModelStudent modelStudent = (ModelStudent) intent.getSerializableExtra("modelStudent");
-        ModelTeacher modelTeacher = (ModelTeacher) intent.getSerializableExtra("modelTeacher");
+
+        modelStudent = (ModelStudent) intent.getSerializableExtra("modelStudent");
+        modelTeacher = (ModelTeacher) intent.getSerializableExtra("modelTeacher");
 
         if (modelStudent != null) {
-            userName.setText(modelStudent.getFullName());
+            hisName = modelStudent.getFullName();
+            userName.setText(hisName);
             hisUid = modelStudent.getToken();
             hisImage = modelStudent.getImageLink();
             try {
@@ -90,7 +111,8 @@ public class ChatActivity extends AppCompatActivity {
                 Picasso.get().load(R.drawable.avatar).into(hisImg);
             }
         } else if (modelTeacher != null) {
-            userName.setText(modelTeacher.getFullName());
+            hisName = modelTeacher.getFullName();
+            userName.setText(hisName);
             hisUid = modelTeacher.getToken();
             hisImage = modelTeacher.getImageLink();
             try {
@@ -111,6 +133,7 @@ public class ChatActivity extends AppCompatActivity {
         msgSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                notify = true;
                 String message = messagInput.getText().toString().trim();
 
                 if (TextUtils.isEmpty(message)){
@@ -184,7 +207,8 @@ public class ChatActivity extends AppCompatActivity {
         });
     }
 
-    private void sendMessage(String message) {
+    private void sendMessage(final String message) {
+
         DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference(NODE_CHATS);
 
         @SuppressLint("SimpleDateFormat") SimpleDateFormat formatter = new SimpleDateFormat("EEE, MMM dd  |  hh:mm a");
@@ -204,7 +228,93 @@ public class ChatActivity extends AppCompatActivity {
 
         dbRef.push().setValue(messagePack);
 
-        messagInput.setText("");
+        final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("users").child(myUid);
+
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                String myname = (String) dataSnapshot.child("fullName").getValue();
+
+                Log.d("fullName", hisUid);
+
+                if (notify){
+                    sendNotification(hisUid, myname, message);
+                }
+
+                notify = false;
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+
+    }
+
+    private void sendNotification(final String hisId, final String hisName, final String message) {
+
+
+        DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("tokens");
+
+        Query query = dbRef.orderByKey().equalTo(hisUid);
+
+        query.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot ds: dataSnapshot.getChildren()){
+                    Token token = ds.getValue(Token.class);
+
+                    final Data data = new Data(modelStudent, modelTeacher, hisName + ": "+message, "New Massage", hisId, R.drawable.avatar);
+
+                    Sender sender = new Sender(data, token.getToken());
+
+
+                    try {
+                        JSONObject senderJsonObj = new JSONObject(new Gson().toJson(sender));
+
+                        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest("https://fcm.googleapis.com/fcm/send", senderJsonObj, new Response.Listener<JSONObject>() {
+                            @Override
+                            public void onResponse(JSONObject response) {
+                                Log.d("JSON_RESPONSE", "onResponse: " +response.toString()+"\nonMsg: " +data.getBody());
+
+                                messagInput.setText("");
+                            }
+                        }, new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                Log.d("JSON_ERROR", "onResponse: " +error.toString());
+
+                            }
+                        }){
+                            @Override
+                            public Map<String, String> getHeaders() throws AuthFailureError {
+                                Map<String , String> headers = new HashMap<>();
+                                headers.put("Content-Type", "application/json");
+                                headers.put("Authorization", "key=AAAAU0EpuEU:APA91bHE5EK3qdTJWegs9JKYCAlc8gZvbEvp41wQGOUlhGo-mtPDm6gRkOkM2JcY7tyz5iHLB0rGYFGvgoQ8FMdJfRcP0JbH9nkjcHsZakeK0Hfa29oAehUt0y0cAzCqEvUksbIkUpmq");
+                                return headers;
+                            }
+                        };
+
+
+                        MySingleton.getInstance(getApplicationContext()).addToRequestQueue(jsonObjectRequest);
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
 
     }
 
@@ -239,6 +349,7 @@ public class ChatActivity extends AppCompatActivity {
             ActivityOptions activityOptions = ActivityOptions.makeSceneTransitionAnimation(this);
             startActivity(intent, activityOptions.toBundle());
         }
+
 
     }
 }

@@ -32,16 +32,6 @@ import com.google.firebase.auth.FirebaseAuth;
 
 public class LoginActivity extends AppCompatActivity {
 
-    /*
-    1. Notification Channel
-    2. Notification Builder -> to delete notification
-    3. Notification Manager
-    */
-    int count = 0;
-    public static final String CHANNEL_ID = "123";
-    private static final String CHANNEL_NAME = "simplified";
-    private static final String CHANNEL_DESC = "simplified Notification";
-    private TextView textView;
 
     private EditText emailEditText, passwordEditText;
     private ProgressBar progressBar;
@@ -66,13 +56,6 @@ public class LoginActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_login);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, CHANNEL_NAME, NotificationManager.IMPORTANCE_DEFAULT);
-            channel.setDescription(CHANNEL_DESC);
-            NotificationManager manager = getSystemService(NotificationManager.class);
-            assert manager != null;
-            manager.createNotificationChannel(channel);
-        }
 
         //textView = findViewById(R.id.textViewToken);
         emailEditText = findViewById(R.id.editTextEmail);
@@ -105,7 +88,6 @@ public class LoginActivity extends AppCompatActivity {
         btRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                count = 0;
                 Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
                 Pair[] pairs = new Pair[1];
                 pairs[0] = new Pair<View, String>(tvLogin, "tvLogin");

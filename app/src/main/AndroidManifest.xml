@@ -15,7 +15,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning">
-        <activity android:name=".activities.PendingRequestActivity"></activity>
+        <activity android:name=".activities.PendingRequestActivity" />
         <activity
             android:name=".activities.ChatActivity"
             android:windowSoftInputMode="adjustResize|stateHidden" />
@@ -24,7 +24,6 @@
         <activity
             android:name=".activities.RegisterActivity"
             android:windowSoftInputMode="stateHidden" />
-        <activity android:name=".activities.SendNotificationActivity" />
         <activity android:name=".activities.ProfileActivity" />
         <activity android:name=".activities.MainActivity" />
         <activity
@@ -40,12 +39,13 @@
 
         <service
             android:name=".notifications.MyFirebaseMessagingService"
-            android:permission="TODO"
-            tools:ignore="ExportedService">
+            android:permission="com.google.android.c2dm.permission.SEND">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
             </intent-filter>
         </service>
+
     </application>
 
 </manifest>
