@@ -41,8 +41,8 @@ public class AdapterStudentList extends RecyclerView.Adapter<AdapterStudentList.
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
 
-        String depnt = "<b>"+"Department: "+"</b>"+ studentList.get(i).getRegNo();
-        String reg = "<b>"+"Reg No: "+"</b>"+ studentList.get(i).getDepartment();
+        String depnt = "<b>"+"Department: "+"</b>"+ studentList.get(i).getDepartment();
+        String reg = "<b>"+"Reg No: "+"</b>"+ studentList.get(i).getRegNo();
 
         viewHolder.fullName.setText(studentList.get(i).getFullName());
         viewHolder.regNo.setText(Html.fromHtml(reg));

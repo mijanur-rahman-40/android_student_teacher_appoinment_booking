@@ -207,6 +207,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void logOut(){
+        updateToken("");
         firebaseAuth.signOut();
         finish();
         Intent intent = new Intent(MainActivity.this, LoginActivity.class);
