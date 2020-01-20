@@ -1,13 +1,10 @@
 package com.example.notification.notifications;
 
-import com.example.notification.models.ModelStudent;
-import com.example.notification.models.ModelTeacher;
+
 
 public class Data {
 
-    private ModelStudent userStudent;
-    private ModelTeacher userTeacher;
-    private String  body, title, sent;
+    private String userId, body, title, sent;
     private  Integer icon;
 
 
@@ -15,9 +12,8 @@ public class Data {
 
     }
 
-    public Data(ModelStudent userStudent, ModelTeacher userTeacher, String body, String title, String sent, Integer icon) {
-        this.userStudent = userStudent;
-        this.userTeacher = userTeacher;
+    public Data(String userId, String body, String title, String sent, Integer icon) {
+        this.userId = userId;
         this.body = body;
         this.title = title;
         this.sent = sent;
@@ -33,13 +29,6 @@ public class Data {
         this.body = body;
     }
 
-    public ModelStudent getUser() {
-        return userStudent;
-    }
-
-    public void setUser(ModelStudent userStudent) {
-        this.userStudent = userStudent;
-    }
 
     public String getTitle() {
         return title;
@@ -65,11 +54,4 @@ public class Data {
         this.icon = icon;
     }
 
-    public ModelTeacher getUserTeacher() {
-        return userTeacher;
-    }
-
-    public void setUserTeacher(ModelTeacher userTeacher) {
-        this.userTeacher = userTeacher;
-    }
 }

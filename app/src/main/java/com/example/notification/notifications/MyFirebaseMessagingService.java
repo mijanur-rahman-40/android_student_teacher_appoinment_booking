@@ -33,10 +33,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
-        final Intent intent = new Intent(this, ChatActivity.class);
+        final Intent intent = new Intent(getApplicationContext(), ChatActivity.class);
 
-        intent.putExtra("modelStudent", remoteMessage.getData().get("userStudent"));
-        intent.putExtra("modelTeacher", remoteMessage.getData().get("userTeacher"));
+        intent.putExtra("userId", remoteMessage.getData().get("userId"));
 
         NotificationManager notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
         int notificationID = new Random().nextInt(3000);
@@ -57,7 +56,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 R.drawable.ic_notifications_blue);
 
         Uri notificationSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, ADMIN_CHANNEL_ID)
+        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(getApplicationContext(), ADMIN_CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_notifications_blue)
                 .setLargeIcon(largeIcon)
                 .setContentTitle(remoteMessage.getData().get("title"))
@@ -80,7 +79,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         String adminChannelDescription = "Device to devie notification";
 
         NotificationChannel adminChannel;
-        adminChannel = new NotificationChannel(ADMIN_CHANNEL_ID, adminChannelName, NotificationManager.IMPORTANCE_HIGH);
+        adminChannel = new NotificationChannel(ADMIN_CHANNEL_ID, adminChannelName, NotificationManager.IMPORTANCE_DEFAULT);
         adminChannel.setDescription(adminChannelDescription);
         adminChannel.enableLights(true);
         adminChannel.setLightColor(Color.RED);

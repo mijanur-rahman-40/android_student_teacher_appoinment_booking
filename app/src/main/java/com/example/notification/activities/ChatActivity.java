@@ -32,6 +32,7 @@ import com.example.notification.notifications.MySingleton;
 import com.example.notification.notifications.Sender;
 import com.example.notification.notifications.Token;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -50,6 +51,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class ChatActivity extends AppCompatActivity {
 
@@ -62,6 +64,8 @@ public class ChatActivity extends AppCompatActivity {
     private String hisImage;
     private FirebaseAuth firebaseAuth;
     private RecyclerView chatRecyle;
+
+    private String userId, userType;
 
     private boolean notify = false;
 
@@ -97,31 +101,10 @@ public class ChatActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
 
-        modelStudent = (ModelStudent) intent.getSerializableExtra("modelStudent");
-        modelTeacher = (ModelTeacher) intent.getSerializableExtra("modelTeacher");
+        userId   = intent.getStringExtra("userId");
 
-        if (modelStudent != null) {
-            hisName = modelStudent.getFullName();
-            userName.setText(hisName);
-            hisUid = modelStudent.getToken();
-            hisImage = modelStudent.getImageLink();
-            try {
-                Picasso.get().load(modelStudent.getImageLink()).into(hisImg);
-            } catch (Exception e){
-                Picasso.get().load(R.drawable.avatar).into(hisImg);
-            }
-        } else if (modelTeacher != null) {
-            hisName = modelTeacher.getFullName();
-            userName.setText(hisName);
-            hisUid = modelTeacher.getToken();
-            hisImage = modelTeacher.getImageLink();
-            try {
-                Picasso.get().load(modelTeacher.getImageLink()).into(hisImg);
-            } catch (Exception e){
-                Picasso.get().load(R.drawable.avatar).into(hisImg);
-            }
-        }
 
+        getUser(userId);
 
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -147,6 +130,55 @@ public class ChatActivity extends AppCompatActivity {
         readMessage();
 
         seenMessage();
+
+    }
+
+    private void getUser(final String userId) {
+
+        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+
+        final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("users");
+
+        if (firebaseUser!=null){
+            databaseReference.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                        if (Objects.requireNonNull(ds.child("token").getValue()).toString().equals(userId)) {
+                            userType = Objects.requireNonNull(ds.child("userType").getValue()).toString();
+                            if (userType.equals("teacher")) {
+                                modelTeacher = ds.getValue(ModelTeacher.class);
+                                hisName = modelTeacher.getFullName();
+                                userName.setText(hisName);
+                                hisUid = modelTeacher.getToken();
+                                hisImage = modelTeacher.getImageLink();
+                                try {
+                                    Picasso.get().load(modelTeacher.getImageLink()).into(hisImg);
+                                } catch (Exception e){
+                                    Picasso.get().load(R.drawable.avatar).into(hisImg);
+                                }
+                            } else if (userType.equals("student")) {
+                                modelStudent = ds.getValue(ModelStudent.class);
+                                hisName = modelStudent.getFullName();
+                                userName.setText(hisName);
+                                hisUid = modelStudent.getToken();
+                                hisImage = modelStudent.getImageLink();
+                                try {
+                                    Picasso.get().load(modelStudent.getImageLink()).into(hisImg);
+                                } catch (Exception e){
+                                    Picasso.get().load(R.drawable.avatar).into(hisImg);
+                                }
+                            }
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+        }
 
     }
 
@@ -267,7 +299,7 @@ public class ChatActivity extends AppCompatActivity {
                 for (DataSnapshot ds: dataSnapshot.getChildren()){
                     Token token = ds.getValue(Token.class);
 
-                    final Data data = new Data(modelStudent, modelTeacher, hisName + ": "+message, "New Massage", hisId, R.drawable.avatar);
+                    final Data data = new Data(myUid,hisName + ": "+message, "New Massage", hisId, R.drawable.avatar);
 
                     Sender sender = new Sender(data, token.getToken());
 
@@ -352,4 +384,6 @@ public class ChatActivity extends AppCompatActivity {
 
 
     }
+
+
 }

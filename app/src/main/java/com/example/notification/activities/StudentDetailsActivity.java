@@ -75,7 +75,7 @@ public class StudentDetailsActivity extends AppCompatActivity {
     private void goToChatActivity() {
         Intent intent = new Intent(this, ChatActivity.class);
 
-        intent.putExtra("modelStudent", modelStudent);
+        intent.putExtra("userId", modelStudent.getToken());
 
         startActivity(intent);
     }

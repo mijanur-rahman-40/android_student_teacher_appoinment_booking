@@ -126,7 +126,7 @@ public class TeacherDetailsActivity extends AppCompatActivity {
     private void goToChatActivity() {
         Intent intent = new Intent(this, ChatActivity.class);
 
-        intent.putExtra("modelTeacher", modelTeacher);
+        intent.putExtra("userId", modelTeacher.getToken());
         startActivity(intent);
     }
 
