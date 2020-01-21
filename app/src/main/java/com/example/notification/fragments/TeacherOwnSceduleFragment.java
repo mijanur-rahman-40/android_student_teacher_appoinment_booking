@@ -6,6 +6,7 @@ import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,11 +26,17 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.notification.R;
 import com.example.notification.activities.ProfileActivity;
 import com.example.notification.adapters.AdapterFreeTime;
 import com.example.notification.models.ModelFreeTime;
+import com.example.notification.models.ModelNotification;
 import com.example.notification.models.ModelTeacher;
+import com.example.notification.notifications.MySingleton;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
@@ -42,11 +49,16 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import org.json.JSONObject;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 public class TeacherOwnSceduleFragment extends Fragment {
 
@@ -170,6 +182,7 @@ public class TeacherOwnSceduleFragment extends Fragment {
 
                 if (!date.isEmpty() && !startTime.isEmpty() && !endTime.isEmpty()){
                     storeFreeTimeToDatabase(date, startTime, endTime, owner, slot);
+
                 } else {
                     Toast.makeText(getContext(), "These Field Are Required", Toast.LENGTH_SHORT).show();
                 }
@@ -200,9 +213,9 @@ public class TeacherOwnSceduleFragment extends Fragment {
     }
 
 
-    private void storeFreeTimeToDatabase(String date, String startTime, String endTime, String owner, String slot) {
+    private void storeFreeTimeToDatabase(final String date, String startTime, String endTime, final String owner, String slot) {
 
-        String scheduleID = databaseReference.child("freeTimes").push().getKey();
+        final String scheduleID = databaseReference.child("freeTimes").push().getKey();
 
         ModelFreeTime modelFreeTime = new ModelFreeTime(date, startTime, endTime, owner, slot, scheduleID);
 
@@ -220,6 +233,8 @@ public class TeacherOwnSceduleFragment extends Fragment {
                         rlAdd.setVisibility(View.GONE);
                         rlShow.setVisibility(View.VISIBLE);
 
+                        createtNotification(owner, date, scheduleID, modelTeacher.getFullName());
+
                         Toast.makeText(getContext(), "Free Time Added", Toast.LENGTH_SHORT).show();
                     }
                 }).addOnFailureListener(new OnFailureListener() {
@@ -230,11 +245,84 @@ public class TeacherOwnSceduleFragment extends Fragment {
         });
     }
 
+    private void createtNotification(String owner, String date, String scheduleId, String notifierName) {
+        ModelNotification modelNotification = new ModelNotification(owner, date, scheduleId, notifierName);
+
+        String noticationId = databaseReference.child("notifications").push().getKey();
+
+        DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("notifications");
+
+        assert noticationId != null;
+        dbRef.child(noticationId).setValue(modelNotification);
+
+        String sender =  "<b>"+ notifierName+"</b>" + " added a schedule";
+
+
+        String NOTIFICATION_TOPIC = "/topics/" + "SCHEDULE";
+        String NOTIFICATION_TITLE = "New Notification";
+        String NOTIFICATION_TYPE = "scheduleNotification";
+
+
+        JSONObject notificationJo = new JSONObject();
+
+        JSONObject notificationBodyJo = new JSONObject();
+
+
+        try {
+            notificationBodyJo.put("notificationType", NOTIFICATION_TYPE);
+            notificationBodyJo.put("sender", owner);
+            notificationBodyJo.put("nId", noticationId);
+            notificationBodyJo.put("nTitle", NOTIFICATION_TITLE);
+            notificationBodyJo.put("nDescription", Html.fromHtml(sender));
+
+            notificationJo.put("to", NOTIFICATION_TOPIC);
+
+            notificationJo.put("data", notificationBodyJo);
+
+
+
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
+        sendScheduleNotification(notificationJo);
+
+
+    }
+
+    private void sendScheduleNotification(JSONObject notificationJo) {
+
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest("https://fcm.googleapis.com/fcm/send", notificationJo, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                Log.d("JSON_RESPONSE", "onResponse: " + response.toString());
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d("JSON_ERROR", "onResponse: " + error.toString());
+
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Content-Type", "application/json");
+                headers.put("Authorization", "key=AAAAU0EpuEU:APA91bHE5EK3qdTJWegs9JKYCAlc8gZvbEvp41wQGOUlhGo-mtPDm6gRkOkM2JcY7tyz5iHLB0rGYFGvgoQ8FMdJfRcP0JbH9nkjcHsZakeK0Hfa29oAehUt0y0cAzCqEvUksbIkUpmq");
+                return headers;
+            }
+        };
+
+        MySingleton.getInstance(getContext()).addToRequestQueue(jsonObjectRequest);
+    }
+
     private void pickNumber() {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         LayoutInflater inflater = getLayoutInflater();
-        View theView = inflater.inflate(R.layout.number_picker_dialog, null);
+        @SuppressLint("InflateParams") View theView = inflater.inflate(R.layout.number_picker_dialog, null);
         numberPicker = theView.findViewById(R.id.number_picker);
 
         builder.setView(theView)
@@ -260,7 +348,7 @@ public class TeacherOwnSceduleFragment extends Fragment {
     }
 
     private void setAppointmentDate(final TextView datePick) {
-        datePickerDialog = new DatePickerDialog(getContext(),
+        datePickerDialog = new DatePickerDialog(Objects.requireNonNull(getContext()),
                 new DatePickerDialog.OnDateSetListener() {
 
                     @Override

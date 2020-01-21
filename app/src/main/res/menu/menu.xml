@@ -4,6 +4,11 @@
     <item
         android:id="@+id/my_acc"
         android:title="My Account" />
+
+    <item
+        android:id="@+id/settings"
+        android:title="Settings" />
+
     <item
         android:id="@+id/logout"
         android:title="Logout"/>

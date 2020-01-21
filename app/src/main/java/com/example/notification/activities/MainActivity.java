@@ -82,6 +82,10 @@ public class MainActivity extends AppCompatActivity {
                                 goProfileActivity();
                                 return true;
 
+                            case(R.id.settings):
+                                goSettingsActivity();
+                                return true;
+
                             case (R.id.logout):
                                 logOut();
                                 return true;
@@ -100,6 +104,13 @@ public class MainActivity extends AppCompatActivity {
 
         tabMenu.setupWithViewPager(viewPager);
         viewPager.setCurrentItem(1);  // 0 = drink , 1=food
+
+    }
+
+    private void goSettingsActivity() {
+
+        Intent intent = new Intent(this, SettingsActivity.class);
+        startActivity(intent);
 
     }
 

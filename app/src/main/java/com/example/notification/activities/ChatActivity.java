@@ -296,7 +296,7 @@ public class ChatActivity extends AppCompatActivity {
                         Token token = ds.getValue(Token.class);
 
 
-                        final Data data = new Data(myUid, hisName + ": " + message, "New Massage", hisId, R.drawable.avatar);
+                        final Data data = new Data(myUid, hisName + ": " + message, "New Massage", hisId, "chatNotification", R.drawable.avatar);
 
                         assert token != null;
                         Sender sender = new Sender(data, token.getToken());

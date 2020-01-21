@@ -27,12 +27,16 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
 import com.example.notification.R;
+import com.example.notification.adapters.AdapterRequestList;
 import com.example.notification.adapters.AdapterViewPager;
 import com.example.notification.fragments.TeacherOwnSceduleFragment;
 import com.example.notification.fragments.TeacherRequestedScheduleFragment;
+import com.example.notification.models.ModelRequest;
 import com.example.notification.models.ModelStudent;
 import com.example.notification.models.ModelTeacher;
 import com.example.notification.notifications.Data;
@@ -52,7 +56,9 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Objects;
 
 public class ProfileActivity extends AppCompatActivity {
@@ -71,6 +77,8 @@ public class ProfileActivity extends AppCompatActivity {
     ModelTeacher modelTeacher;
     ModelStudent modelStudent;
 
+    private List<ModelRequest> modelRequests;
+
     ViewPager aptPager;
     TabLayout aptTab;
 
@@ -83,6 +91,7 @@ public class ProfileActivity extends AppCompatActivity {
     private ImageView tpImage, spImage, backBtn;
     private Animation animation;
     private LinearLayout tProLv;
+    private RecyclerView stReqRv;
     private TextView tName, department, designation, email, regNo, session, semester, proDetails;
 
     @Override
@@ -124,20 +133,6 @@ public class ProfileActivity extends AppCompatActivity {
 
         }
 
-        //this basically return a task
-//        FirebaseInstanceId.getInstance().getInstanceId()
-//                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
-//                    @Override
-//                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
-//                        if (task.isSuccessful()) {
-//                            String token = task.getResult().getToken();
-//                            //saveToken(token);
-//                        } else {
-//                            //textView.setText(task.getException().getMessage());
-//                        }
-//                    }
-//
-//                });
     }
 
     private void setUpViewPager(ViewPager aptPager) {
@@ -176,6 +171,8 @@ public class ProfileActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
+        retrieveStRequests();
+
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -204,6 +201,52 @@ public class ProfileActivity extends AppCompatActivity {
         });
     }
 
+    private void retrieveStRequests() {
+        modelRequests = new ArrayList<>();
+
+        try {
+            DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("requests");
+
+
+            dbRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                    modelRequests.clear();
+
+                    for (DataSnapshot ds : dataSnapshot.getChildren()){
+
+                        ModelRequest modelRequest = ds.getValue(ModelRequest.class);
+
+                        Log.i("Retrieve", ds.toString());
+
+                        assert modelRequest != null;
+                        if (modelRequest.getSenderId().equals(user.getUid())){
+                            modelRequests.add(modelRequest);
+                        }
+                    }
+
+                    AdapterRequestList adapterRequestList = new AdapterRequestList(modelRequests, getApplicationContext());
+
+                    LinearLayoutManager linearLayout = new LinearLayoutManager(getApplicationContext());
+
+                    stReqRv.setLayoutManager(linearLayout);
+
+                    stReqRv.setAdapter(adapterRequestList);
+
+                    Log.i("LIST", (String.valueOf(modelRequests.size())));
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
     private void setupStudentViews() {
         tName = findViewById(R.id.tvName);
         department = findViewById(R.id.stPDept);
@@ -215,6 +258,7 @@ public class ProfileActivity extends AppCompatActivity {
         backBtn = findViewById(R.id.back_btn);
         proDetails = findViewById(R.id.proDetails);
         tProLv= findViewById(R.id.tProLv);
+        stReqRv = findViewById(R.id.studentRequestRv);
 
     }
 
@@ -528,23 +572,5 @@ public class ProfileActivity extends AppCompatActivity {
         }
 
     }
-//
-//    private void saveToken(String token) {
-//        String email = firebaseAuth.getCurrentUser().getEmail();
-//        ModelStudent user = new ModelStudent(email, token);
-//
-//        DatabaseReference databaseUser = FirebaseDatabase.getInstance().getReference(NODE_USERS);
-//
-//        databaseUser.child(firebaseAuth.getCurrentUser().getUid()).setValue(user)
-//                .addOnCompleteListener(new OnCompleteListener<Void>() {
-//                    @Override
-//                    public void onComplete(@NonNull Task<Void> task) {
-//                        if (task.isSuccessful()) {
-//                            Toast.makeText(ProfileActivity.this, "Token Saved", Toast.LENGTH_SHORT).show();
-//                        } else {
-//
-//                        }
-//                    }
-//                });
-//    }
+
 }

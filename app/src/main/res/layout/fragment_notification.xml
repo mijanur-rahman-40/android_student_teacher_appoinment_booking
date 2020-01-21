@@ -17,34 +17,13 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="10dp">
-
-            <TextView
-                android:id="@+id/tvDrink"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:text="Notifications"
-                android:textAlignment="center"
-                android:textSize="16sp"
-                android:textStyle="bold" />
-
-            <View
-                android:id="@+id/view3"
-                android:layout_width="match_parent"
-                android:layout_height="3dp"
-                android:layout_below="@+id/tvDrink"
-                android:layout_alignLeft="@+id/tvDrink"
-                android:layout_alignRight="@+id/tvDrink"
-                android:background="@color/colorPrimary" />
+            android:layout_height="wrap_content">
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rvDrink"
+                android:id="@+id/rvNotification"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/view3"
-                android:layout_marginTop="10dp" />
+                android:background="@color/colorBlueT" />
         </RelativeLayout>
     </androidx.cardview.widget.CardView>
 

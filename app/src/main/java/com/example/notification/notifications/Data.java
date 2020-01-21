@@ -4,7 +4,7 @@ package com.example.notification.notifications;
 
 public class Data {
 
-    private String userId, body, title, sent;
+    private String userId, body, title, sent, notificationType;
     private  Integer icon;
 
 
@@ -12,11 +12,12 @@ public class Data {
 
     }
 
-    public Data(String userId, String body, String title, String sent, Integer icon) {
+    public Data(String userId, String body, String title, String sent, String notificationType, Integer icon) {
         this.userId = userId;
         this.body = body;
         this.title = title;
         this.sent = sent;
+        this.notificationType = notificationType;
         this.icon = icon;
     }
 
@@ -54,4 +55,11 @@ public class Data {
         this.icon = icon;
     }
 
+    public String getNotificationType() {
+        return notificationType;
+    }
+
+    public void setNotificationType(String notificationType) {
+        this.notificationType = notificationType;
+    }
 }

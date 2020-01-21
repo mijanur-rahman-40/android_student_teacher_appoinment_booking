@@ -52,6 +52,7 @@ public class AdapterRequestList extends RecyclerView.Adapter<AdapterRequestList.
                 "You ": modelRequests.get(i).getReceiverName();
 
         String reqTo = "<b>"+ sender+"</b>" + " requested for an appointment to "+ "<b>"+ receiver+"</b>";
+
         String dateTime = "<b>"+ modelRequests.get(i).getAptdate()+"</b>" + " between "+ "<b>"+ modelRequests.get(i).getStartTime()
                 +"</b>" + " and "+ "<b>"+ modelRequests.get(i).getEndTime()+"</b>";
 

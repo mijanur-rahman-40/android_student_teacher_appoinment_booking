@@ -15,6 +15,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning">
+        <activity android:name=".activities.SettingsActivity"></activity>
         <activity android:name=".activities.PendingRequestActivity" />
         <activity
             android:name=".activities.ChatActivity"
@@ -45,7 +46,6 @@
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
             </intent-filter>
         </service>
-
     </application>
 
 </manifest>

@@ -64,7 +64,7 @@ public class AdapterMessageList extends RecyclerView.Adapter<AdapterMessageList.
     }
 
     @Override
-    public void onBindViewHolder(@NonNull MessageViewHolder messageViewHolder, int i) {
+    public void onBindViewHolder(@NonNull MessageViewHolder messageViewHolder, final int i) {
 
         String message = messageEntities.get(i).getMessage();
 
@@ -92,23 +92,6 @@ public class AdapterMessageList extends RecyclerView.Adapter<AdapterMessageList.
 
         }
 
-
-        messageViewHolder.text.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                final Snackbar snackbar = Snackbar.make(v,"Delete message?", Snackbar.LENGTH_LONG)
-                        .setAction("DELETE", new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-
-                            }
-                        });
-                snackbar.setActionTextColor(Color.RED);
-                snackbar.show();
-                return true;
-            }
-        });
-;
     }
 
     @Override
@@ -126,7 +109,28 @@ public class AdapterMessageList extends RecyclerView.Adapter<AdapterMessageList.
             text = itemView.findViewById(R.id.messageText);
             date = itemView.findViewById(R.id.date);
             avatar = itemView.findViewById(R.id.r_avatar);
+
+
+
+            itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    final Snackbar snackbar = Snackbar.make(v,"Delete message?", Snackbar.LENGTH_LONG)
+                            .setAction("DELETE", new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+
+                                }
+                            });
+                    snackbar.setActionTextColor(Color.RED);
+                    snackbar.show();
+                    return true;
+                }
+            });
+            ;
         }
+
+
     }
 
 }
